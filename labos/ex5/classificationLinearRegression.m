@@ -62,6 +62,7 @@ end
 % plot the decision surface
 figure()
 contourf(hx, wx, pred, 1);
+colormap(jet)
 % plot indiviual data points
 hold on
 myBlue = [0.06 0.06 1];

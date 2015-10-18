@@ -11,10 +11,17 @@ height = height * 0.025;
 weight = weight * 0.454;
 X = [height weight];
 % normalize features (store the mean and variance)
-height = (height - mean(height))./std(height);
-weight = (weight - mean(weight))./std(weight);
+meanHeight = mean(height);
+heightNormalised = height - meanHeight;
+stdHeight = std(height);
+heightNormalised = heightNormalised./stdHeight;
+meanWeight = mean(weight);
+weightNormalised = weight - meanWeight;
+stdWeight = std(weight);
+weightNormalised = weightNormalised./stdWeight;
+
 % Form (y,tX) to get regression data in matrix form
-Xnormalised = [height weight];
+Xnormalised = [heightNormalised weightNormalised];
 y = gender;
 N = length(y);
 tX = [ones(N,1) Xnormalised];
@@ -55,24 +62,6 @@ for k = 1:maxIters
             break;
         end
     end
-    
-%     % Overlay on the contour plot
-%     % For this to work you first have to run grid Search
-%     subplot(121);
-%     plot(beta(1), beta(2), 'o', 'color', 0.7*[1 1 1], 'markersize', 12);
-%     pause(.5) % wait half a second
-%     
-%     % visualize function f on the data
-%     subplot(122);
-%     x = [1.2:.01:2]; % height from 1m to 2m
-%     x_normalized = (x - meanX)./stdX;
-%     f = beta(1) + beta(2).*x_normalized;
-%     plot(height, weight,'.');
-%     hold on;
-%     plot(x,f,'r-');
-%     hx = xlabel('x');
-%     hy = ylabel('y');
-%     hold off;
 end
 
 beta = beta_all(:,k);
@@ -110,18 +99,17 @@ end
 
 % plot the decision surface
 figure()
-contourf(hx, wx, pred, 1);
+contourf(hx*stdHeight+meanHeight, wx*stdWeight+meanWeight, pred, 1);
+colormap(jet)
 % plot indiviual data points
 hold on
 myBlue = [0.06 0.06 1];
 myRed = [1 0.06 0.06];
-plot(Xnormalised(males,1), Xnormalised(males,2),'x','color',myRed,'linewidth', ...
+plot(X(males,1), X(males,2),'x','color',myRed,'linewidth', ...
     2, 'markerfacecolor', myRed);
 hold on
-plot(Xnormalised(females,1), Xnormalised(females,2),'o','color', ...
+plot(X(females,1), X(females,2),'o','color', ...
     myBlue,'linewidth', 2, 'markerfacecolor', myBlue);
 xlabel('height');
 ylabel('weight');
-xlim([min(h) max(h)]);
-ylim([min(w) max(w)]);
 grid on;

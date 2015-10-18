@@ -1,6 +1,3 @@
-% INSERT CODE WHERE INDICATED
-% Written by Emtiyaz, EPFL for PCML 2014, 2015
-% all rights reserved
 clear
 close all
 clc
@@ -14,10 +11,17 @@ height = height * 0.025;
 weight = weight * 0.454;
 X = [height weight];
 % normalize features (store the mean and variance)
-height = (height - mean(height))./std(height);
-weight = (weight - mean(weight))./std(weight);
+meanHeight = mean(height);
+heightNormalised = height - meanHeight;
+stdHeight = std(height);
+heightNormalised = heightNormalised./stdHeight;
+meanWeight = mean(weight);
+weightNormalised = weight - meanWeight;
+stdWeight = std(weight);
+weightNormalised = weightNormalised./stdWeight;
+
 % Form (y,tX) to get regression data in matrix form
-Xnormalised = [height weight];
+Xnormalised = [heightNormalised weightNormalised];
 y = gender;
 N = length(y);
 tX = [ones(N,1) Xnormalised];
@@ -25,7 +29,8 @@ tX = [ones(N,1) Xnormalised];
 
 % algorithm parametes
 maxIters = 1000;
-alpha = 0.001;
+alpha = 0.1;
+lambda = 100;
 converged = 0;
 
 % initialize
@@ -35,14 +40,12 @@ beta = [0; 0; 0];
 fprintf('Starting iterations, press Ctrl+c to break\n');
 fprintf('L  beta0 betaH betaW\n');
 for k = 1:maxIters
-    % INSERT YOUR FUNCTION FOR COMPUTING GRADIENT
-    g = computeGradient(y,tX,beta);
     
-    % INSERT YOUR FUNCTION FOR COMPUTING COST FUNCTION
-    L = computeCostLogisticReg(y, tX, beta);
+    [L, g, H] = logisticRegLoss(beta, y, tX);
+%     [L, g, H] = logisticPenRegLoss(beta, y, tX,lambda);
     
-    % INSERT GRADIENT DESCENT UPDATE TO FIND BETA
-    beta = beta - alpha.*g;
+    % INSERT NEWTON METHOD UPDATE TO FIND BETA
+    beta = beta - alpha.*(H^-1)*g;
     
     % store beta and L
     beta_all(:,k) = beta;
@@ -58,33 +61,14 @@ for k = 1:maxIters
             break;
         end
     end
-    
-%     % Overlay on the contour plot
-%     % For this to work you first have to run grid Search
-%     subplot(121);
-%     plot(beta(1), beta(2), 'o', 'color', 0.7*[1 1 1], 'markersize', 12);
-%     pause(.5) % wait half a second
-%     
-%     % visualize function f on the data
-%     subplot(122);
-%     x = [1.2:.01:2]; % height from 1m to 2m
-%     x_normalized = (x - meanX)./stdX;
-%     f = beta(1) + beta(2).*x_normalized;
-%     plot(height, weight,'.');
-%     hold on;
-%     plot(x,f,'r-');
-%     hx = xlabel('x');
-%     hy = ylabel('y');
-%     hold off;
 end
 
 beta = beta_all(:,k);
 
 % create a 2?D meshgrid of values of heights and weights
-h = [min(X(:,1)):.01:max(X(:,1))];
-w = [min(X(:,2)):.01:max(X(:,2))];
+h = [min(Xnormalised(:,1)):.01:max(Xnormalised(:,1))];
+w = [min(Xnormalised(:,2)):.01:max(Xnormalised(:,2))];
 [hx, wx] = meshgrid(h,w);
-hxNormalised = hx-mean
 % predict for each pair, i.e. create tX for each [hx,wx]
 % and then predict the value. After that you should
 % reshape `pred` so that you can use `contourf`.
@@ -114,7 +98,8 @@ end
 
 % plot the decision surface
 figure()
-contourf(hx, wx, pred, 1);
+contourf(hx*stdHeight+meanHeight, wx*stdWeight+meanWeight, pred, 1);
+colormap(jet)
 % plot indiviual data points
 hold on
 myBlue = [0.06 0.06 1];
@@ -126,6 +111,4 @@ plot(X(females,1), X(females,2),'o','color', ...
     myBlue,'linewidth', 2, 'markerfacecolor', myBlue);
 xlabel('height');
 ylabel('weight');
-xlim([min(h) max(h)]);
-ylim([min(w) max(w)]);
 grid on;
