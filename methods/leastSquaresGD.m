@@ -1,7 +1,8 @@
 function beta = leastSquaresGD(y,tX,alpha)
 
 % Maximum number of iterations
-maxIters = 1000; % TO DEFINE 
+maxIters = 1000; % TO DEFINE
+epsilon = 0.01;
 
 % Number of data
 N = size(tX,1);
@@ -27,12 +28,17 @@ for k = 1:maxIters
     
     % Look at the convergence
     if k>1
-        if abs(beta-beta_all(k-1))<0.001
+        if abs(beta-beta_all(k-1)) < epsilon
             % If the difference between last and present beta is small...
             % break
+            fprintf('Converged !\n'); 
             break;
         end
     end
+end
+
+if abs(beta-beta_all(k-1)) >= epsilon
+    fprintf('Reached end of iterations\n');
 end
 
 % Final value of beta

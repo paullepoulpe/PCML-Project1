@@ -1,18 +1,16 @@
 function beta = logisticRegression(y,tX,alpha)
 
 % Maximum number of iterations
-maxIters = 1000; % TO DEFINE
+maxIters = 10000; % TO DEFINE
 
 % Number of data
 N = size(tX,1);
 
 % Beta initialisation
 beta = zeros(size(tX,2),1);
-beta = zeros(size(tX,2),1);
 
 % Iterate the gradient descent
 for k = 1:maxIters
-    
     % Compute cost of logistic regression
     L = computeCostLogisticReg(y, tX, beta);
     % Compute the gradient
@@ -29,8 +27,11 @@ for k = 1:maxIters
     beta_all(:,k) = beta;
     L_all(k) = L;
     
+    
+    
     % Look at the convergence
     if k>1
+        fprintf('%d : %f\n', k, max(abs(beta-beta_all(k-1))));
         if abs(beta-beta_all(k-1))<0.01
             % If the difference between last and present beta is small...
             % break
