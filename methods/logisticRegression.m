@@ -19,9 +19,9 @@ for k = 1:maxIters
     H = computeHessian(tX, beta);
     
     % Update beta using gradient descent
-    % beta = beta - alpha.*g;
+    beta = beta - alpha.*g;
     % Update beta using Newton's method
-    beta = beta - alpha.*(H^-1)*g;
+    % beta = beta - alpha.*(H^-1)*g;
     
     % Store beta and L
     beta_all(:,k) = beta;
