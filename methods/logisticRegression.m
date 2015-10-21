@@ -1,7 +1,7 @@
 function beta = logisticRegression(y,tX,alpha)
 
 % Maximum number of iterations
-maxIters = 10000; % TO DEFINE
+maxIters = 1000; % TO DEFINE
 
 % Number of data
 N = size(tX,1);
@@ -19,9 +19,9 @@ for k = 1:maxIters
     H = computeHessian(tX, beta);
     
     % Update beta using gradient descent
-    beta = beta - alpha.*g;
+    % beta = beta - alpha.*g;
     % Update beta using Newton's method
-    % beta = beta - alpha.*(H^-1)*g;
+    beta = beta - alpha.*(H^-1)*g;
     
     % Store beta and L
     beta_all(:,k) = beta;
@@ -31,8 +31,8 @@ for k = 1:maxIters
     
     % Look at the convergence
     if k>1
-        fprintf('%d : %f\n', k, max(abs(beta-beta_all(k-1))));
-        if abs(beta-beta_all(k-1))<0.01
+        fprintf('%d : %f\n', k, max(abs(beta-beta_all(:,k-1))));
+        if abs(beta-beta_all(:,k-1))<0.01
             % If the difference between last and present beta is small...
             % break
             break;
