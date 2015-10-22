@@ -1,4 +1,4 @@
-function [ XReduced ] = pca( X, minEigen)
+function [ XReduced, V, VReduced ] = pca( X, minEigen)
 % PCA Do PCA to remove the correlated dimensions of tX
 
 covariance = cov(X'*X);

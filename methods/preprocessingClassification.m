@@ -39,7 +39,7 @@ res = penLogisticRegression(y, tX, 0.001,1);
 % res = ridgeRegression(y, tX, 10);
 
 y_pred = sigma([ones(testSize , 1) XKept((trainSize + 1):end,:)] * res);
-y_pred(y_pred >= 0.5) = 1;
+y_pred(y_pred >= -0.5) = 1;
 y_pred(y_pred < 0.5) = 0;
 y_true = yFiltered((trainSize + 1):end, :);
 

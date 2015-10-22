@@ -1,6 +1,8 @@
-function X = normalise(X)
+function [ X, meanX, stdX ] = normalise(X)
 
 N = size(X,1);
-X = (X - ones(N,1)*mean(X))./(ones(N,1)*std(X));
+meanX = mean(X);
+stdX = std(X);
+X = (X - ones(N,1)*meanX)./(ones(N,1)*stdX);
 
 end

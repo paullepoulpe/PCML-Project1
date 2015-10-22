@@ -1,6 +1,5 @@
-function [ groups, centers ] = kmeans( k, X )
-%KMEANS Summary of this function goes here
-%   Detailed explanation goes here
+function [ groups, centers ] = kmeans( X, k )
+%KMEANS Clustering X data in k clusters
 
 dim = size(X, 2);
 len = length(X);
@@ -15,7 +14,7 @@ end
 presorted = X(I, :);
 
 
-% Iniitialize centers
+% Inititialize centers
 centers = zeros(k, dim);
 for cluster = 1:k
    sizeChunk = floor(len/k);
