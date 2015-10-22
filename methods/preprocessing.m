@@ -29,7 +29,7 @@ legend('cluster 1','cluster 2','cluster 3', 'cluster 4','test data','centers');
 
 %% Remove outliers (train)
 
-%[XFiltered, yFiltered] = removeOutlierLines(XNormalised, yNormalised, 3, 2); 
+%[XFiltered, yFiltered] = removeOutlierLines(XNormalised, yNormalised, 3, 2);
 XFiltered = fixOutliers(XNormalised, 3);
 yFiltered = yNormalised;
 
@@ -62,8 +62,8 @@ tXTr = [ones(length(XKept), 1)  XKept];
 tXTe = [ones(length(XTe), 1)  XTe];
 y = cluster;
 
-beta = logRegMultiClass( y, tXTr, 0.001, 4 );
-clusterPred = predictClass(tXTe, beta, 4);
+betaC = logRegMultiClass( y, tXTr, 0.001, 4 );
+clusterPred = predictClass(tXTe, betaC, 4);
 
 figure()
 plot(clusterTrue, clusterPred,'.','markersize',10);
@@ -72,14 +72,22 @@ axis([0 5 0 5]);
 %% Train
 y = yFiltered;
 
-% res = logisticRegression(y, tX, 0.01);
-% res = penLogisticRegression(y, tX, 0.01,1000);
-% res = leastSquaresGD(y, tX, 0.01);
-res = leastSquares(y, tXTr);
-% res = ridgeRegression(y, tX, 10);
-
-yPred = tXTr * res;
-yTrue = yFiltered;
+for k = 1:4
+    % beta = logisticRegression(y, tX, 0.01);
+    % beta = penLogisticRegression(y, tX, 0.01,1000);
+    % beta = leastSquaresGD(y, tX, 0.01);
+    beta(:,k) = leastSquares(y(cluster == k), tXTr(cluster == k,:));
+    % beta = ridgeRegression(y, tX, 10);
+    
+end
+yPred = zeros(size(yTe));
+for k = 1:4
+    indices = find(clusterPred == k);
+    for i = 1:length(indices)
+        yPred(indices(i),:) = tXTe(i,:) * beta(:,k);
+    end
+end
+yTrue = yTe;
 
 figure()
 plot(yTrue, yPred, '*');
