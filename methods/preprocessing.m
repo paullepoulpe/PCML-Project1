@@ -4,6 +4,17 @@ clc
 
 load('../data/SaoPaulo_regression.mat')
 
+%% Visualise the data 
+figure()
+histogram(y_train);
+
+figure()
+for i = 1:size(X_train,2)
+    ax(i) = subplot(7,10,i);
+    plot(X_train(:,i),y_train,'*');
+end
+linkaxes(ax);
+
 %% Separe X_train in train and test to make cross-validation
 [ XTr, XTe, yTr, yTe ] = divideDataSet( X_train, y_train, 4, 2 );
 
@@ -31,6 +42,7 @@ legend('cluster 1','cluster 2','cluster 3', 'cluster 4','test data','centers');
 
 %[XFiltered, yFiltered] = removeOutlierLines(XNormalised, yNormalised, 3, 2);
 XFiltered = fixOutliers(XNormalised, 3);
+% XFiltered = XNormalised;
 yFiltered = yNormalised;
 
 len = length(XFiltered);
@@ -41,29 +53,34 @@ width = size(XFiltered, 2);
 
 %% Preprocess test data
 % Find cluster
-for line = 1:length(yTe)
-    distances = zeros(size(centers,1), 1);
-    for group = 1:size(centers,1)
-        distances(group) = norm(centers(group, :) - [XTe(line, :) yTe(line,:)]);
-    end
-    group = find(distances == min(distances));
-    clusterTrue(line) = group;
-end
-clusterTrue = clusterTrue';
+clusterTrue = findClosestGroup([XTe yTe], centers);
 
 % Normalise given mean and std of the training set
-XTe = (XTe - ones(size(XTe,1),1)*meanX)./(ones(size(XTe,1),1)*stdX);
-yTe = (yTe - meanY)./stdY;
+XTeNormalised = (XTe - ones(size(XTe,1),1)*meanX)./(ones(size(XTe,1),1)*stdX);
+yTeNormalised = (yTe - meanY)./stdY;
 % Reduce the dimension given PCA of training set
-XTe = (VReduced'*(V*XTe'))';
+XTeNormalised = (VReduced'*(V*XTeNormalised'))';
 
 %% Train for clusters
+%% With logistic regression for multiclass 
 tXTr = [ones(length(XKept), 1)  XKept];
-tXTe = [ones(length(XTe), 1)  XTe];
+tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
 y = cluster;
 
 betaC = logRegMultiClass( y, tXTr, 0.001, 4 );
 clusterPred = predictClass(tXTe, betaC, 4);
+
+%% Train for clusters
+%% With an approximation of y and minimum distance to centers
+y = yFiltered;
+% beta = logisticRegression(y, tX, 0.01);
+% beta = penLogisticRegression(y, tX, 0.01,1000);
+% beta = leastSquaresGD(y, tX, 0.01);
+betaCl = leastSquares(y, tXTr);
+% beta = ridgeRegression(y, tX, 10);
+
+yPred = (tXTe * betaCl)*stdY + meanY;
+clusterPred = findClosestGroup([XTe yPred], centers);
 
 figure()
 plot(clusterTrue, clusterPred,'.','markersize',10);
@@ -87,6 +104,7 @@ for k = 1:4
         yPred(indices(i),:) = tXTe(i,:) * beta(:,k);
     end
 end
+yPred = yPred * stdY + meanY;
 yTrue = yTe;
 
 figure()

@@ -8,8 +8,8 @@ load('../data/SaoPaulo_classification.mat')
 [ XTr, XTe, yTr, yTe ] = divideDataSet( X_train, y_train, 4, 2 );
 
 %% Preprocessing the data
-[XNormalised, meanX, stdX] = normalise(XTr);
-yNormalised = yTr;
+XNormalised = normalise(X_train);
+yNormalised = y_train;
 yNormalised(yNormalised < 0) = 0;
 
 %% Remove outliers
@@ -25,30 +25,26 @@ width = size(XFiltered, 2);
 % XKept = pca(XFiltered, 1);
 XKept = XFiltered;
 
-%% Preprocess test data
-% Normalise given mean and std of the training set
-XTeNormalised = (XTe - ones(size(XTe,1),1)*meanX)./(ones(size(XTe,1),1)*stdX);
-yTeNormalised = yTe;
-% Reduce the dimension given PCA of training set
-% XTeNormalised = (VReduced'*(V*XTeNormalised'))';
-
 %% Train
-tXTr = [ones(size(XKept,1), 1)  XTr];
-tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
+tX = [ones(length(train), 1)  XTr];
 y = yTr;
 
 % beta = logisticRegression(y, tX, 0.001);
-beta = penLogisticRegression(y, tXTr, 0.001,1);
+beta = penLogisticRegression(y, tX, 0.001,1);
 % beta = leastSquaresGD(y, tX, 0.01);
 % beta = leastSquares(y, tX);
-% beta = ridgeRegression(y, tX, 10);
+% re = ridgeRegression(y, tX, 10);
 
-yPred = sigma(tXTe * beta);
-yPred(yPred >= 0.5) = 1;
-yPred(yPred < 0.5) = 0;
-yTrue = yTe;
+y_pred = sigma([ones(testSize , 1) XTe] * beta);
+y_pred(y_pred >= -0.5) = 1;
+y_pred(y_pred < 0.5) = 0;
+y_true = yFiltered((trainSize + 1):end, :);
 
-yPred(yPred == 0) = -1; 
+yPredFinal = y_pred;
+yPredFinal(yPredFinal == 0) = -1; 
 
-figure()
-plot(yTrue, yPred, '*');
+plot(y_true, y_pred, '*');
+hold on;
+max = ceil(max([y_pred y_true]));
+min = floor(min([y_pred y_true]));
+plot(min:max, min:max);
