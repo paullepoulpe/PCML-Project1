@@ -32,7 +32,7 @@ for k = 1:maxIters
     % Look at the convergence
     if k>1
         fprintf('%d : %f\n', k, max(abs(beta-beta_all(:,k-1))));
-        if abs(beta-beta_all(:,k-1))<0.01
+        if abs(beta-beta_all(:,k-1))<0.001
             % If the difference between last and present beta is small...
             % break
             break;
