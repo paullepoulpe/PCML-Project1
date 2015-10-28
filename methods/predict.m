@@ -1,12 +1,12 @@
 function [ yPred ] = predict( XTr, yTr, XTe )
 %predict
 
-%% Clustering of the data with kMeans
+%% Clustering of the data with kmeansStable
 % Need to do that with non-normalised data !
 X = XTr;
 y = yTr;
-[cluster, centers] = kmeans([X(:,55) y], 2);
-[subcluster, subcenters] = kmeans([X(cluster==1,6) y(cluster==1)], 2);
+[cluster, centers] = kmeansStable([X(:,55) y], 2);
+[subcluster, subcenters] = kmeansStable([X(cluster==1,6) y(cluster==1)], 2);
 
 finalCluster = cluster;
 finalCluster(cluster == 2) = 3;
