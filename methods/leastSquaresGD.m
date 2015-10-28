@@ -1,7 +1,7 @@
 function beta = leastSquaresGD(y,tX,alpha)
 
 % Maximum number of iterations
-maxIters = 1000; % TO DEFINE
+maxIters = 5000; % TO DEFINE
 epsilon = 0.01;
 
 % Number of data

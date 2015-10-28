@@ -20,7 +20,7 @@ plot(X_train(:,55),y_train,'*');
 binaryDim = [50];
 threeDim = [20 21 26 37 46];
 fourDim = [32 45 51 65];
-twoCloudsDim = [55]; 
+twoCloudsDim = [6 55]; 
 
 %% Cross-validation
 datagroups = 3;
@@ -35,7 +35,7 @@ group = 2;
     X = XTr;
     y = yTr;
     [cluster, centers] = kmeans([X(:,55) y], 2);
-    [subcluster, subcenters] = kmeans([X(cluster==1,55) y(cluster==1)], 2);
+    [subcluster, subcenters] = kmeans([X(cluster==1,6) y(cluster==1)], 2);
     
     finalcluster = cluster;
     finalcluster(cluster == 2) = 3;
@@ -59,6 +59,15 @@ group = 2;
     plot(X(finalcluster==3,55),y(finalcluster==3,1),'*');
     plot(XTe(:,55),yTe(:,1),'*');
     plot(finalcenters(:,1), finalcenters(:,end),'.r', 'markersize',30);
+    legend('cluster 1','cluster 2','cluster 3','test data','finalcenters');
+    
+    figure()
+    plot3(X(finalcluster==1,6),X(finalcluster==1,55),y(finalcluster==1,1),'*');
+    hold on
+    plot3(X(finalcluster==2,6),X(finalcluster==2,55),y(finalcluster==2,1),'*');
+    plot3(X(finalcluster==3,6),X(finalcluster==3,55),y(finalcluster==3,1),'*');
+    plot3(XTe(:,6),XTe(:,55),yTe(:,1),'*');
+%     plot3(finalcenters(:,1),centers(:,2), finalcenters(:,end),'.r', 'markersize',30);
     legend('cluster 1','cluster 2','cluster 3','test data','finalcenters');
     %% Normalise the data (train)
     
@@ -104,10 +113,11 @@ group = 2;
     
     beta = leastSquaresGD(y(finalcluster~=3), tXTr(finalcluster~=3,:), 0.01);
     yPred = (tXTe(finalclusterPred~=3,:) * beta)*stdY + meanY;
-    betaCl = logisticRegression( cluster(cluster~=3), [XTr(cluster~=3,55) yTr(cluster~=3)], 0.001 );
-    subclusterPred =  sigma([XTe(finalclusterPred~=3,55) yPred]* betaCl);
-    subclusterPred(subclusterPred > 0.5) = 1;
-    subclusterPred(subclusterPred <= 0.5) = 2;
+%     betaCl = logisticRegression( cluster(cluster~=3), [XTr(cluster~=3,55) yTr(cluster~=3)], 0.001 );
+%     subclusterPred =  sigma([XTe(finalclusterPred~=3,55) yPred]* betaCl);
+%     subclusterPred(subclusterPred > 0.5) = 1;
+%     subclusterPred(subclusterPred <= 0.5) = 2;
+    subclusterPred = findClosestGroup([XTe(finalclusterPred~=3,6) ], finalcenters(1:2,1));
     finalclusterPred(finalclusterPred~=3) = subclusterPred;
     
     figure()
@@ -116,7 +126,7 @@ group = 2;
     plot(XTe(finalclusterPred==2,55),yTe(finalclusterPred==2,1),'*');
     plot(XTe(finalclusterPred==3,55),yTe(finalclusterPred==3,1),'*');
 %     plot(finalcenters(:,1), finalcenters(:,end),'.r', 'markersize',30);
-    legend('cluster 1','cluster 2','cluster 3','test data','finalcenters');
+    legend('cluster 1','cluster 2','cluster 3');
     %% Train for clusters
     %% With an approximation of y and minimum distance to centers
     % y = yFiltered;
@@ -134,22 +144,22 @@ group = 2;
 %     clusterPred = predictClass(tXTe, betaC, 4);
     
     figure()
-    plot(clusterTrue, clusterPred,'.','markersize',10);
+    plot(clusterTrue, finalclusterPred,'.','markersize',10);
     axis([0 5 0 5]);
     
     %% Train
     y = yTrFiltered;
     
-    for k = 1:2
+    for k = 1:3
         % beta = leastSquaresGD(y(cluster == k), tXTr(cluster == k,:), 0.01);
-        beta(:,k) = leastSquares(y(cluster == k), tXTr(cluster == k,:));
+        beta(:,k) = leastSquares(y(finalcluster == k), tXTr(finalcluster == k,:));
         % beta = ridgeRegression(y(cluster == k), tXTr(cluster == k,:), 10);
         
     end
     
     yPred = zeros(size(yTe));
-    for k = 1:2
-        indices = find(clusterPred == k);
+    for k = 1:3
+        indices = find(finalclusterPred == k);
         for i = 1:length(indices)
             yPred(indices(i),:) = tXTe(i,:) * beta(:,k);
         end

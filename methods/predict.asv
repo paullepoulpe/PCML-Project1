@@ -1,0 +1,72 @@
+function [ yPred ] = predict( XTr, yTr, XTe )
+%predict
+
+%% Clustering of the data with kMeans
+% Need to do that with non-normalised data !
+X = XTr;
+y = yTr;
+[cluster, centers] = kmeans([X(:,55) y], 2);
+[subcluster, subcenters] = kmeans([X(cluster==1,55) y(cluster==1)], 2);
+
+finalcluster = cluster;
+finalcluster(cluster == 2) = 3;
+finalcluster(cluster==1) = subcluster;
+finalcenters = [subcenters(1,:);centers(2,:);subcenters(2,:)];
+
+%% Normalise the data (train)
+
+[XTrNormalised, meanX, stdX] = normalise(XTr);
+[yTrNormalised, meanY, stdY] = normalise(yTr);
+
+%% Remove outliers (train)
+
+%[XFiltered, yFiltered] = removeOutlierLines(XNormalised, yNormalised, 3, 2);
+XTrFiltered = fixOutliers(XTrNormalised, 3);
+yTrFiltered = yTrNormalised;
+
+%% Remove correlated columns using PCA (test)
+[XTrKept, V, VReduced] = pca(XTrFiltered, 1);
+
+%% Preprocess test data
+% Normalise given mean and std of the training set
+XTeNormalised = (XTe - ones(size(XTe,1),1)*meanX)./(ones(size(XTe,1),1)*stdX);
+% Reduce the dimension given PCA of training set
+XTeNormalised = (VReduced'*(V*XTeNormalised'))';
+
+%% Compute tX for train and test
+tXTr = [ones(length(XTrKept), 1)  XTrKept];
+tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
+
+%% Train for clusters using minimum distance to the center in 55th dimension
+clusterPred = findClosestGroup([XTe(:,55)], centers(:,1));
+
+beta = leastSquaresGD(y(finalcluster~=3), tXTr(finalcluster~=3,:), 0.01);
+yPred = (tXTe(finalclusterPred~=3,:) * beta)*stdY + meanY;
+betaCl = logisticRegression( cluster(cluster~=3), [XTr(cluster~=3,55) yTr(cluster~=3)], 0.001 );
+subclusterPred =  sigma([XTe(finalclusterPred~=3,55) yPred]* betaCl);
+subclusterPred(subclusterPred > 0.5) = 1;
+subclusterPred(subclusterPred <= 0.5) = 2;
+finalclusterPred(finalclusterPred~=3) = subclusterPred;
+
+%% Train
+y = yTrFiltered;
+
+for k = 1:2
+    % beta = leastSquaresGD(y(cluster == k), tXTr(cluster == k,:), 0.01);
+    beta(:,k) = leastSquares(y(cluster == k), tXTr(cluster == k,:));
+    % beta = ridgeRegression(y(cluster == k), tXTr(cluster == k,:), 10);
+    
+end
+
+yPred = zeros(size(XTe,1));
+for k = 1:2
+    indices = find(clusterPred == k);
+    for i = 1:length(indices)
+        yPred(indices(i),:) = tXTe(i,:) * beta(:,k);
+    end
+end
+
+yPred = yPred * stdY + meanY;
+
+end
+
