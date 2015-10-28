@@ -5,8 +5,8 @@ function [ yPred ] = predict( XTr, yTr, XTe )
 % Need to do that with non-normalised data !
 X = XTr;
 y = yTr;
-[cluster, centers] = kmeansStable([X(:,55) y], 2);
-[subcluster, subcenters] = kmeansStable([X(cluster==1,6) y(cluster==1)], 2);
+[cluster, centers, ~] = kmeansStable([X(:,55) y], 2);
+[subcluster, subcenters, ~] = kmeansStable([X(cluster==1,6) y(cluster==1)], 2);
 
 finalCluster = cluster;
 finalCluster(cluster == 2) = 3;
