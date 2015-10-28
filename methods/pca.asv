@@ -9,7 +9,7 @@ covariance = cov(X'*X);
 VReduced = V(:,lambdaCol);
 
 XProjected = (V*X')';
-XReduced = (VReduced'*XProjected')';
+XReduced = (VReduced'*tXProjected')';
 
 end
 

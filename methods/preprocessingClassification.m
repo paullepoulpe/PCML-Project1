@@ -37,11 +37,8 @@ tXTr = [ones(size(XKept,1), 1)  XTr];
 tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
 y = yTr;
 
-% beta = logisticRegression(y, tX, 0.001);
+% beta = logisticRegression(y, tXTr, 0.001);
 beta = penLogisticRegression(y, tXTr, 0.001,1);
-% beta = leastSquaresGD(y, tX, 0.01);
-% beta = leastSquares(y, tX);
-% beta = ridgeRegression(y, tX, 10);
 
 yPred = sigma(tXTe * beta);
 yPred(yPred >= 0.5) = 1;

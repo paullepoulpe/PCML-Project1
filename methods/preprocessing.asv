@@ -155,8 +155,8 @@ group = 2;
         end
     end
     
-%     betaT = leastSquares(yTr, tXTr);
-%     yPred = tXTe*betaT;
+    betaT = leastSquares(yTr, tXTr);
+    yPred = tXTe*betaT;
     yPred = yPred * stdY + meanY;
     yTrue = yTe;
     
