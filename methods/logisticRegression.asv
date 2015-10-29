@@ -11,6 +11,15 @@ beta = zeros(size(tX,2),1);
 
 % Iterate the gradient descent
 for k = 1:maxIters
+    % Compute cost of logistic regression
+    L = computeCostLogisticReg(y, tX, beta);
+    fprintf('');
+    if k > 1
+        if L > L_all(k-1)
+            alpha = alpha/2;
+            fprintf('alpha reduced');
+        end
+    end
     % Compute the gradient
     g = computeGradient(y, tX, beta);
     % Compute the Hessian
@@ -20,10 +29,6 @@ for k = 1:maxIters
     % beta = beta - alpha.*g;
     % Update beta using Newton's method
     beta = beta - alpha.*(H^-1)*g;
-    
-    % Compute cost of logistic regression
-    L = computeCostLogisticReg(y, tX, beta);
-    fprintf('%d : %f\n', k,L);
     
     % Store beta and L
     beta_all(:,k) = beta;
@@ -37,9 +42,6 @@ for k = 1:maxIters
         if abs(beta-beta_all(:,k-1))<0.002
             % If the difference between last and present beta is small...
             % break
-            break;
-        end
-        if L <0
             break;
         end
     end
