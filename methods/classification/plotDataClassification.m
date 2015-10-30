@@ -9,7 +9,7 @@ load('../data/SaoPaulo_classification.mat');
 keep = zeros(1, length(X_train));
 for i = 1:length(X_train) 
     line = X_train(i, :);
-    if(line(20) == 2)
+    if(line(20) == 1)
         keep(i) = 0;
     else 
         keep(i) = 1;
@@ -25,9 +25,9 @@ dim = size(X_train, 2);
 
 
 for d = 1:dim
-   %figure();
-   %hold on;
-   %plot(X_train(y_train == -1, 30), X_train(y_train == -1, d), 'r*');
-   %plot(X_train(y_train == 1, 30), X_train(y_train == 1, d), 'b*');
+   figure();
+   hold on;
+   plot(X_train(y_train == -1, 30), X_train(y_train == -1, d), 'r*');
+   plot(X_train(y_train == 1, 30), X_train(y_train == 1, d), 'b*');
    %histogram(X_train(:, d))
 end
