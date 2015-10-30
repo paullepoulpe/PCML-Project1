@@ -4,7 +4,7 @@ function [ trRMSE, teRMSE, param ] = crossValidationParamRegression( y, X, group
 trRMSE = [];
 teRMSE = [];
 
-param = logspace(-5,8,20);
+param = logspace(-5,-2,10);
 
 for paramNumber = 1:length(param)
     trError = [];

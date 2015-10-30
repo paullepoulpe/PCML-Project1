@@ -41,7 +41,7 @@ V = cell(size(finalCenters,1),1);
 VReduced = cell(size(finalCenters,1),1);
 tXTr = cell(size(finalCenters,1),1);
 yTrF = cell(size(finalCenters,1),1);
-beta = cell(size(finalCenters,1),1);
+% beta = cell(size(finalCenters,1),1);
 
 for cl = 1:size(finalCenters,1)
     % Take the data for one cluster
@@ -68,8 +68,8 @@ for cl = 1:size(finalCenters,1)
     yTrF{cl,1} = yTrFiltered;
     
 %     beta{cl,1} = leastSquaresGD(yTrF{cl,1}, tXTr{cl,1}, param);
-%     beta{cl,1} = leastSquares(yTrF{cl,1}, tXTr{cl,1});
-    beta{cl,1} = ridgeRegression(yTrF{cl,1}, tXTr{cl,1}, param);
+    beta( = leastSquares(yTrF{cl,1}, tXTr{cl,1});
+%     beta{cl,1} = ridgeRegression(yTrF{cl,1}, tXTr{cl,1}, param);
     
 %     figure()
 %     plot(XTrKept(:,1),yTrF{cl,1},'*');
@@ -96,7 +96,7 @@ for cl = 1:size(finalCenters,1)
     tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
     
     % Compute the prediction
-    yPred(finalClusterPred == cl,:) = tXTe * beta{cl,1};
+    yPred(finalClusterPred == cl,:) = tXTe * beta(:,cl);
     yPred(finalClusterPred == cl,:) = yPred(finalClusterPred == cl,:) * stdY(cl,:) + meanY(cl,:);
 end
 
