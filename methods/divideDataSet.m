@@ -4,7 +4,7 @@ function [ XTr, XTe, yTr, yTe ] = divideDataSet( X, y, K, k )
 N = size(y,1);
 idx = randperm(N);
 Nk = floor(N/K);
-%idxCV = zeros(K, N);
+idxCV = zeros(K, Nk);
 
 for k = 1:K
     idxCV(k, :) = idx(1+(k-1)*Nk:k*Nk);
