@@ -6,7 +6,7 @@ load('../data/SaoPaulo_classification.mat')
 
 
 %% Separe X_train in train and test to make cross-validation
-[ XTr, XTe, yTr, yTe ] = divideDataSet( X_train, yTrFiltered, 4, 2 );
+[ XTr, XTe, yTr, yTe ] = divideDataSet( X_train, y_train, 4, 2 );
 
 % cards = cardinalities( XTr );
 % XTr = XTr(:,cards < size(XTr,1));
@@ -17,13 +17,14 @@ cluster = XTr(:,20);
 clusterPred = XTe(:,20);
 
 %% Train regression model for each cluster
-V = cell(size(finalCenters,1),1);
-VReduced = cell(size(finalCenters,1),1);
-tXTr = cell(size(finalCenters,1),1);
-yTrF = cell(size(finalCenters,1),1);
-beta = cell(size(finalCenters,1),1);
+sizeCluster = length(unique(cluster));
+V = cell(sizeCluster,1);
+VReduced = cell(sizeCluster,1);
+tXTr = cell(sizeCluster,1);
+yTrF = cell(sizeCluster,1);
+beta = cell(sizeCluster,1);
 
-for cl = 1:length(unique(cluster))
+for cl = 1:sizeCluster
     % Take the data for one cluster
     X = XTr(cluster == cl,:);
     y = yTr(cluster == cl,:);
@@ -38,7 +39,7 @@ for cl = 1:length(unique(cluster))
 %     XFiltered = fixOutliers(XTrNormalised, 3);
 
     % Remove correlated columns using PCA 
-    [XTrKept, V{cl,1}, VReduced{cl,1}] = pca(XTrFiltered, 1);
+%     [XTrKept, V{cl,1}, VReduced{cl,1}] = pca(XTrFiltered, 1);
     XTrKept = XTrFiltered;
     
     % Compute tX and final y
@@ -50,32 +51,29 @@ for cl = 1:length(unique(cluster))
 
 end
 
-len = length(XFiltered);
-width = size(XFiltered, 2);
-
 %% Test
 yPred = zeros(size(XTe,1),1);
 for cl = 1:length(unique(clusterPred))
+    % Take the data from one cluster
+    X = XTe(finalClusterPred == cl,:);
     
-% Normalise given mean and std of the training set
-XTeNormalised = (XTe - ones(size(XTe,1),1)*meanX)./(ones(size(XTe,1),1)*stdX);
-yTeNormalised = yTe;
-% Reduce the dimension given PCA of training set
-% XTeNormalised = (VReduced'*(V*XTeNormalised'))';
+    % Normalise given mean and std of the training set
+    XTeNormalised = (X - ones(size(X,1),1)*meanX(cl,:))./(ones(size(X,1),1)*stdX(cl,:));
+    
+    % Reduce the dimension given PCA of training set
+%     XTeNormalised = (VReduced{cl,1}'*(V{cl,1}*XTeNormalised'))';
+    
+    % Compute tX
+    tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
+    
+    % Prediction
+    yPred(clusterPred == cl,:) = sigma(tXTe * beta{cl,1});
 
-%% Train
-tXTr = [ones(size(XKept,1), 1)  XTr];
-tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
-y = yTr;
+end
 
-
-
-yPred = sigma(tXTe * beta);
 yPred(yPred >= 0.5) = 1;
-yPred(yPred < 0.5) = 0;
+yPred(yPred < 0.5) = -1;
 yTrue = yTe;
-
-yPred(yPred == 0) = -1; 
 
 figure()
 plot(yTrue, yPred, '*');
