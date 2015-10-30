@@ -7,6 +7,9 @@ load('../data/SaoPaulo_classification.mat')
 %% Separe X_train in train and test to make cross-validation
 [ XTr, XTe, yTr, yTe ] = divideDataSet( X_train, y_train, 4, 2 );
 
+% cards = cardinalities( XTr );
+% XTr = XTr(:,cards < size(XTr,1));
+% XTe = XTe(:,cards < size(XTr,1));
 %% Preprocessing the data
 [XNormalised, meanX, stdX] = normalise(XTr);
 yNormalised = yTr;
@@ -14,8 +17,8 @@ yNormalised(yNormalised < 0) = 0;
 
 %% Remove outliers
 %[XFiltered, yFiltered] = removeOutlierLines(XNormalised, yNormalised, 3, 2); 
-% XFiltered = fixOutliers(XNormalised, 3);
-XFiltered = XNormalised;
+XFiltered = fixOutliers(XNormalised, 3);
+% XFiltered = XNormalised;
 yFiltered = yNormalised;
 
 len = length(XFiltered);
@@ -37,8 +40,8 @@ tXTr = [ones(size(XKept,1), 1)  XTr];
 tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
 y = yTr;
 
-% beta = logisticRegression(y, tXTr, 0.001);
-beta = penLogisticRegression(y, tXTr, 0.001,1);
+beta = logisticRegression(y, tXTr, 0.001);
+% beta = penLogisticRegression(y, tXTr, 0.001,1);
 
 yPred = sigma(tXTe * beta);
 yPred(yPred >= 0.5) = 1;

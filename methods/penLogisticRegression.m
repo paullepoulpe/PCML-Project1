@@ -15,6 +15,7 @@ for k = 1:maxIters
     
     % Compute cost of logistic regression
     L = computeCostPenLogisticReg(y, tX, beta, lambda);
+    fprintf('%d : %f\n', k,L);
     % Compute the gradient
     g = computePenGradient(y, tX, beta, lambda);
     % Compute the Hessian
@@ -31,10 +32,13 @@ for k = 1:maxIters
     
     % Look at the convergence
     if k>1
-        fprintf('%d : %f\n', k, max(abs(beta-beta_all(:,k-1))));
+%         fprintf('%d : %f\n', k, max(abs(beta-beta_all(:,k-1))));
         if abs(beta-beta_all(:,k-1))<0.001
             % If the difference between last and present beta is small...
             % break
+            break;
+        end
+        if L <0
             break;
         end
     end
