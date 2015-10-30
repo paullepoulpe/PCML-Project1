@@ -1,6 +1,6 @@
 function [ I, corrs ] = correlation( X, y )
 %CORRELATION Returns the indices with highest correlation between input and output 
-%   corrs returns the correlation
+%   corrs returns the correlation value for each dimension
 
 dim = size(X, 2);
 

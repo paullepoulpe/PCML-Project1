@@ -1,4 +1,4 @@
-function [ yPred ] = predict( XTr, yTr, XTe, param )
+function [ yPred ] = predictRegression( XTr, yTr, XTe, param )
 %predict
 
 %% Find cardinalities of data
