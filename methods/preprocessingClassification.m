@@ -40,8 +40,8 @@ tXTr = [ones(size(XKept,1), 1)  XTr];
 tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
 y = yTr;
 
-beta = logisticRegression(y, tXTr, 0.001);
-% beta = penLogisticRegression(y, tXTr, 0.001,1);
+% beta = logisticRegression(y, tXTr, 0.001);
+beta = penLogisticRegression(y, tXTr, 0.001,20);
 
 yPred = sigma(tXTe * beta);
 yPred(yPred >= 0.5) = 1;
