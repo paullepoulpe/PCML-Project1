@@ -1,6 +1,7 @@
 %% Plot all the dimensions of X_train to visually inspect
 clear
 clc
+close all
 
 load('../data/SaoPaulo_regression.mat');
 len = length(X_train);

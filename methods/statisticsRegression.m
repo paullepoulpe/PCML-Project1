@@ -33,7 +33,7 @@ section('Strong correlation');
 corrs = normalise(corrs);
 
 % Find outliers
-strongCorrIdx = find(corrs > 0.5);
+strongCorrIdx = find(corrs > 2);
 
 fprintf('Dimensions with strong correlation to y:');
 disp(I(strongCorrIdx));
