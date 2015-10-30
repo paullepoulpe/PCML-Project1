@@ -24,23 +24,18 @@ for card = unique(cards)
     end
 end
 
-%% Clusters
-section('2-way Clusters');
+%% Strong correlation
+section('Strong correlation');
 
-sums = zeros(1, dim);
-for d = 1:dim
-   column = X_train(:, d);
-   [idx, C, sumd] = kmeansStable(column, 2);
-   sums(d) = norm(sumd);
-end
+[I, corrs] = correlation(X_train, y_train);
 
 % Normalize
-sums = normalise(sums);
+corrs = normalise(corrs);
 
-% Find outliers ????
-dimsClustered = find(sums > 2);
+% Find outliers
+strongCorrIdx = find(corrs > 0.5);
 
-fprintf('Dimensions with well defined 2-way clusters:');
-disp(dimsClustered);
+fprintf('Dimensions with strong correlation to y:');
+disp(I(strongCorrIdx));
 
 
