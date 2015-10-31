@@ -8,7 +8,7 @@ cards = cardinalities(XTr);
 XTr = XTr(:,cards == size(XTr,1));
 XTe = XTe(:,cards == size(XTr,1));
 
-%% Pre clustering of the data
+%% Pre clustering of the data 
 % Need to do that with non-normalised data !
 
 numClusters = 3;
@@ -73,9 +73,7 @@ for cl = 1:numClusters
     XTeNormalised = (X - ones(size(X,1),1)*meanX(cl,:))./(ones(size(X,1),1)*stdX(cl,:));
     
     % Fix outliers
-    limitDeviation = 3;
-    XTeNormalised(XTeNormalised > limitDeviation) = limitDeviation;
-    XTeNormalised(XTeNormalised < -limitDeviation) = -limitDeviation;
+    XTeNormalised = fixOutliers(XTeNormalised, 3);
     
     % Reduce the dimension given PCA of training set
     XTeNormalised = (VReduced{cl,1}'*(V{cl,1}*XTeNormalised'))';
