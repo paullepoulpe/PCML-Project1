@@ -79,8 +79,8 @@ end
 yPred = zeros(size(XTe,1),1);
 for cl = 1:size(finalCenters,1)
     % Take the data from one cluster
-    X = XTr(finalClusterPred == cl,:);
-    y = yTr(finalClusterPred == cl,:);
+    X = XTe(finalClusterPred == cl,:);
+    %y = yTr(finalClusterPred == cl,:);
     % Normalise given mean and std of the training set
     XTeNormalised = (X - ones(size(X,1),1)*meanX(cl,:))./(ones(size(X,1),1)*stdX(cl,:));
     
