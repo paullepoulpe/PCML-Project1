@@ -1,4 +1,4 @@
-function beta = leastSquaresGD(y,tX,alpha)
+function beta = leastSquaresGD( y, tX, alpha )
 
 % Maximum number of iterations
 maxIters = 10000; % TO DEFINE

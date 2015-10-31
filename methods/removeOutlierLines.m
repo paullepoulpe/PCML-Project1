@@ -1,5 +1,11 @@
 function [XFiltered, yFiltered] = removeOutlierLines(X, y, limitDeviation, limitPerLine)
-%removeOutlierLines Removes lines that contain too many outliers
+% removeOutlierLines Removes lines that contain too many outliers
+%
+% limitDeviation    The number of standard deviations away a point is to be
+%                   considered an outlier
+%
+% limitPerLine      The number of outliers per line that cause us to remove
+%                   the line
 
 stdX = std(X);
 meanX = mean(X);

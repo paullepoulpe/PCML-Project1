@@ -1,5 +1,6 @@
 function [ groups, centers, sumd ] = kmeansStable( X, k )
 %KMEANS Clustering X data in k clusters
+%
 % We need this function because the native MATLAB kmeans algorithm uses 
 % random heuristics to initialise the centers
 
@@ -14,7 +15,6 @@ end
 [~, I] = sort(norms);
 
 presorted = X(I, :);
-
 
 % Inititialize centers
 centers = zeros(k, dim);

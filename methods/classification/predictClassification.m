@@ -1,5 +1,6 @@
-function [ groups ] = predictClass( tX, beta, k )
+function [ groups ] = predictClassification( tX, beta, k )
 %predictClass Return the most probable class for each data
+
 
 for class = 1:k
     

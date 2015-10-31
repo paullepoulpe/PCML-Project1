@@ -1,5 +1,8 @@
 function [ XFixed ] = fixOutliers( X, limitDeviation )
 %fixOutliers Gets the outliers back to a few standard deviations away
+%
+% limitDeviation    Number of std deviations away that makes a point an
+%                   outlier
 
 stdX = std(X);
 meanX = mean(X);
