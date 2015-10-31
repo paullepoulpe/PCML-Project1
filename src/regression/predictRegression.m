@@ -1,20 +1,19 @@
 function [ yPred ] = predictRegression( XTr, yTr, XTe, param )
 %predictRegression Prediction function for the regression
 
-%% Find cardinalities of data
+%% Find cardinalities of dimensions
 cards = cardinalities(XTr);
-clusteredDim = [55, 6];
 
-%% Remove dimensions with discrete arguments
+%% Remove categorical dimensions 
 XTr = XTr(:,cards == size(XTr,1));
 XTe = XTe(:,cards == size(XTr,1));
-clusteredDim = [46, 6];
 
-%% Clustering of the data with kmeansStable
+%% Pre clustering of the data
 % Need to do that with non-normalised data !
 
-[clusters, predictClusters] = trainClusters(XTr, yTr, clusteredDim(1), clusteredDim(2));
-numClusters = length(unique(clusters));
+numClusters = 3;
+[clusters, predictClusters] = trainClusters(XTr, yTr);
+
 %% Predict test clusters 
 
 clustersPred = predictClusters(XTe);
