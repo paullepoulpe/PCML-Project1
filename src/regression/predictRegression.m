@@ -1,5 +1,5 @@
 function [ yPred ] = predictRegression( XTr, yTr, XTe, param )
-%predict
+%predictRegression Prediction function for the regression
 
 %% Find cardinalities of data
 cards = cardinalities(XTr);
@@ -12,41 +12,30 @@ clusteredDim = [46, 6];
 
 %% Clustering of the data with kmeansStable
 % Need to do that with non-normalised data !
-X = XTr;
-y = yTr;
-[cluster, centers, ~] = kmeansStable([X(:,clusteredDim(1)) y], 2);
-[subcluster, subcenters, ~] = kmeansStable([X(cluster==1,clusteredDim(2)) y(cluster==1)], 2);
 
-finalCluster = cluster;
-finalCluster(cluster == 2) = 3;
-finalCluster(cluster==1) = subcluster;
-finalCenters = [subcenters(1,:);centers(2,:);subcenters(2,:)];
+[clusters, predictClusters] = trainClusters(XTr, yTr, clusteredDim(1), clusteredDim(2));
+numClusters = length(unique(clusters));
+%% Predict test clusters 
 
-%% Predict test clusters using 55 and 6th dimensions
-clusterPred = findClosestGroup([XTe(:,clusteredDim(1))], centers(:,1));
-finalClusterPred = clusterPred;
-finalClusterPred(clusterPred == 2) = 3;
+clustersPred = predictClusters(XTe);
 
-subClusterPred = findClosestGroup([XTe(finalClusterPred~=3,clusteredDim(2))], finalCenters(1:2,1));
-finalClusterPred(finalClusterPred~=3) = subClusterPred;
-
-% figure()
-% plot(XTe(finalClusterPred==1,clusteredDim(1)),XTe(finalClusterPred==1,clusteredDim(2)),'*');
-% hold on
-% plot(XTe(finalClusterPred==2,clusteredDim(1)),XTe(finalClusterPred==2,clusteredDim(2)),'*');
-% plot(XTe(finalClusterPred==3,clusteredDim(1)),XTe(finalClusterPred==3,clusteredDim(2)),'*');
+%figure()
+%plot(XTe(clustersPred == 1, clusteredDim(1)),XTe(clustersPred == 1, clusteredDim(2)),'r*');
+%hold on
+%plot(XTe(clustersPred == 2, clusteredDim(1)),XTe(clustersPred == 2, clusteredDim(2)),'b*');
+%plot(XTe(clustersPred == 3, clusteredDim(1)),XTe(clustersPred == 3, clusteredDim(2)),'g*');
 
 %% Train regression model for each cluster
-V = cell(size(finalCenters,1),1);
-VReduced = cell(size(finalCenters,1),1);
-tXTr = cell(size(finalCenters,1),1);
-yTrF = cell(size(finalCenters,1),1);
-beta = cell(size(finalCenters,1),1);
+V = cell(numClusters, 1);
+VReduced = cell(numClusters, 1);
+tXTr = cell(numClusters, 1);
+yTrF = cell(numClusters, 1);
+beta = cell(numClusters, 1);
 
-for cl = 1:size(finalCenters,1)
+for cl = 1:numClusters
     % Take the data for one cluster
-    X = XTr(finalCluster == cl,:);
-    y = yTr(finalCluster == cl,:);
+    X = XTr(clusters == cl,:);
+    y = yTr(clusters == cl,:);
     
     % Normalise the data
     [XTrNormalised, meanX(cl,:), stdX(cl,:)] = normalise(X);
@@ -77,9 +66,9 @@ end
 
 %% Test 
 yPred = zeros(size(XTe,1),1);
-for cl = 1:size(finalCenters,1)
+for cl = 1:numClusters
     % Take the data from one cluster
-    X = XTe(finalClusterPred == cl,:);
+    X = XTe(clustersPred == cl,:);
     %y = yTr(finalClusterPred == cl,:);
     % Normalise given mean and std of the training set
     XTeNormalised = (X - ones(size(X,1),1)*meanX(cl,:))./(ones(size(X,1),1)*stdX(cl,:));
@@ -96,8 +85,8 @@ for cl = 1:size(finalCenters,1)
     tXTe = [ones(length(XTeNormalised), 1)  XTeNormalised];
     
     % Compute the prediction
-    yPred(finalClusterPred == cl,:) = tXTe * beta{cl,1};
-    yPred(finalClusterPred == cl,:) = yPred(finalClusterPred == cl,:) * stdY(cl,:) + meanY(cl,:);
+    yPred(clustersPred == cl,:) = tXTe * beta{cl,1};
+    yPred(clustersPred == cl,:) = yPred(clustersPred == cl,:) * stdY(cl,:) + meanY(cl,:);
 end
 
 end
