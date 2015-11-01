@@ -1,8 +1,8 @@
 function [ XReduced, V, VReduced ] = pca( X, minEigen)
 % PCA Do PCA to remove the correlated dimensions of tX
 % cov*V = V*lambda
-
-covariance = cov(X'*X);
+normX = normalise(X'*X);
+covariance = cov(normX);
 [V, lambda] = eig(covariance);
 
 [~, lambdaCol] = find(lambda > minEigen);

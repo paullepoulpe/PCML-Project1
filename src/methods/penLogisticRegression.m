@@ -1,10 +1,13 @@
-function beta = penLogisticRegression(y,tX,alpha,lambda)
+function beta = penLogisticRegression(y,tX,alphaInitial,lambda)
 
 % Maximum number of iterations
-maxIters = 1000; % TO DEFINE
+maxIters = 5000; % TO DEFINE
 
 % Number of data
 N = size(tX,1);
+
+% alpha initialisation
+alpha = alphaInitial;
 
 % Beta initialisation
 beta = zeros(size(tX,2),1);
@@ -25,7 +28,7 @@ for k = 1:maxIters
     % Compute cost of logistic regression
     L = computeCostPenLogisticReg(y, tX, beta, lambda);
     alpha = abs(L*10^(-4));
-    fprintf('%d : %f  %f\n', k,L, alpha);
+    
     
     % Store beta and L
     beta_all(:,k) = beta;
@@ -33,7 +36,7 @@ for k = 1:maxIters
     
     % Look at the convergence
     if k>1
-%         fprintf('%d : %f\n', k, max(abs(beta-beta_all(:,k-1))));
+%         fprintf('%d : %f  %f %f\n', k,L, alpha, max(abs(beta-beta_all(:,k-1))));
         if abs(beta-beta_all(:,k-1))<0.001
             % If the difference between last and present beta is small...
             % break
