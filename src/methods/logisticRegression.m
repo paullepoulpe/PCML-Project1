@@ -1,10 +1,13 @@
-function beta = logisticRegression( y, tX, alpha )
+function beta = logisticRegression( y, tX, alphaInitial )
 
 % Maximum number of iterations
 maxIters = 15000; % TO DEFINE
 
 % Number of data
 N = size(tX,1);
+
+% alpha initialisation
+alpha = alphaInitial;
 
 % Beta initialisation
 beta = zeros(size(tX,2),1);
