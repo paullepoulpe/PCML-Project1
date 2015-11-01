@@ -3,7 +3,7 @@ close all
 clear
 clc
 
-load('../data/SaoPaulo_classification.mat');
+load('../../data/SaoPaulo_classification.mat');
 
 %X_train = fixOutliers(X_train, 1);
 keep = zeros(1, length(X_train));

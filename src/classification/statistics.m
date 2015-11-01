@@ -2,7 +2,10 @@
 clear
 clc
 
-load('../data/SaoPaulo_classification.mat');
+addpath('../utils');
+addpath('../methods');
+
+load('../../data/SaoPaulo_classification.mat');
 len = length(X_train);
 dim = size(X_train, 2);
 

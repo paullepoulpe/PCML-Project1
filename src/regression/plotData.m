@@ -3,7 +3,7 @@ clear
 clc
 close all
 
-load('../data/SaoPaulo_regression.mat');
+load('../../data/SaoPaulo_regression.mat');
 len = length(X_train);
 dim = size(X_train, 2);
 
