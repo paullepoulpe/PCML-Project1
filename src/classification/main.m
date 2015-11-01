@@ -12,6 +12,15 @@ load('../../data/SaoPaulo_classification.mat')
 
 [ trRMSE, teRMSE, lambda ] = crossValidationParam(X_train, y_train, 3, @predictClassification, 4);
 
-semilogx(lambda, teRMSE, 'r*-')
+% semilogx(lambda, teRMSE, 'r*-')
+% hold on
+% semilogx(lambda, trRMSE, 'b*-')
+
+%%
+figure()
+% subplot(211)
+boxTr = boxplot(trRMSE,'plotstyle','compact','colors','b','labels',lambda);
+% subplot(212)
 hold on
-semilogx(lambda, trRMSE, 'b*-')
+boxTe = boxplot(teRMSE,'plotstyle','compact','colors','r');
+ylim([0.05 0.12])

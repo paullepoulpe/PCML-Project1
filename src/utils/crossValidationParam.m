@@ -5,8 +5,8 @@ function [ trRMSE, teRMSE, param ] = crossValidationParam( X, y, groups, predict
 param = logspace(-3, 3, 10); % For penalised logistic regression
 lenParam = length(param);
 
-trRMSE = zeros(1, lenParam);
-teRMSE = zeros(1, lenParam);
+trRMSE = zeros(nbIter, lenParam);
+teRMSE = zeros(nbIter, lenParam);
 
 for paramIdx = 1:lenParam
     
@@ -25,8 +25,8 @@ for paramIdx = 1:lenParam
     trMeanError = trMeanError( abs(normalise(trMeanError)) < 2 );
     teMeanError = teMeanError( abs(normalise(teMeanError)) < 2 );
 
-    trRMSE(paramIdx) = mean(trMeanError);
-    teRMSE(paramIdx) = mean(teMeanError);
+    trRMSE(:,paramIdx) = trMeanError;
+    teRMSE(:,paramIdx) = teMeanError;
     
     fprintf('Finished %d out of %d\n', paramIdx, lenParam);
     
