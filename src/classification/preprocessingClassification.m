@@ -2,7 +2,10 @@ close all
 clear
 clc
 
-load('../data/SaoPaulo_classification.mat')
+addpath('../utils');
+addpath('../methods');
+
+load('../../data/SaoPaulo_classification.mat')
 
 
 %% Separe X_train in train and test to make cross-validation
