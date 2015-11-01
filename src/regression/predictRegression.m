@@ -40,13 +40,9 @@ for cl = 1:numClusters
     [XTrNormalised, meanX(cl,:), stdX(cl,:)] = normalise(X);
     [yTrNormalised, meanY(cl,:), stdY(cl,:)] = normalise(y);
     
-    %% Remove outliers
+    % Fix outliers back to 3 standard deviations
     XTrFiltered = fixOutliers(XTrNormalised, 3);
-%     XTrFiltered = XTrNormalised;
     yTrFiltered = yTrNormalised;
-    % [XTrFiltered, yFiltered] = removeOutlierLines(XTrNormalised, [yTrNormalised finalCluster], 3, 1);
-    % finalCluster = yFiltered(:,2);
-    % yTrFiltered = yFiltered(:,1);
     
     % Remove correlated columns using PCA 
     [XTrKept, V{cl,1}, VReduced{cl,1}] = pca(XTrFiltered, 1);
@@ -55,6 +51,7 @@ for cl = 1:numClusters
     tXTr{cl,1} = [ones(length(XTrKept), 1)  XTrKept];
     yTrF{cl,1} = yTrFiltered;
     
+    % Compute regression
 %     beta{cl,1} = leastSquaresGD(yTrF{cl,1}, tXTr{cl,1}, param);
 %     beta{cl,1} = leastSquares(yTrF{cl,1}, tXTr{cl,1});
     beta{cl,1} = ridgeRegression(yTrF{cl,1}, tXTr{cl,1}, param);
@@ -68,7 +65,7 @@ yPred = zeros(size(XTe,1),1);
 for cl = 1:numClusters
     % Take the data from one cluster
     X = XTe(clustersPred == cl,:);
-    %y = yTr(finalClusterPred == cl,:);
+
     % Normalise given mean and std of the training set
     XTeNormalised = (X - ones(size(X,1),1)*meanX(cl,:))./(ones(size(X,1),1)*stdX(cl,:));
     

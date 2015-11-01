@@ -1,7 +1,8 @@
 function [ trRMSE, teRMSE, param ] = crossValidationParam( X, y, groups, predictParam, nbIter)
 %crossValidationRegression
 
-param = logspace(-6, 10, 60);
+% param = logspace(-6, 10, 60); % For ridge regression
+param = logspace(-3, 3, 10); % For penalised logistic regression
 lenParam = length(param);
 
 trRMSE = zeros(1, lenParam);

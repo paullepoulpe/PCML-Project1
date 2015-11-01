@@ -1,4 +1,4 @@
-function [XFiltered, yFiltered] = removeOutlierLines(X, y, limitDeviation, limitPerLine)
+function [XFiltered, yFiltered, linesKept] = removeOutlierLines(X, y, limitDeviation, limitPerLine)
 % removeOutlierLines Removes lines that contain too many outliers
 %
 % limitDeviation    The number of standard deviations away a point is to be
@@ -21,6 +21,10 @@ end
 % Remove all line that have 2 or more outliers
 XFiltered = X(counts < limitPerLine, :);
 yFiltered = y(counts < limitPerLine, :);
+
+linesKept = zeros(1, len);
+linesKept(counts < limitPerLine) = 1;
+linesKept(counts >= limitPerLine) = 0;
 
 end
 

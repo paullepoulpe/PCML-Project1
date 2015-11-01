@@ -1,12 +1,12 @@
-function [ trRMSE, teRMSE ] = crossValidation( X, y, groups, predict)
+function [ trError, teError ] = crossValidation( X, y, groups, predict)
 %crossValidationRegression Returns RMSE for train and test for this prediciton function
 % X         Data input
 % y         Output
 % groups    Number of groups to form
 % predict   The prediciton function
 
-trRMSE = zeros(1, groups);
-teRMSE = zeros(1, groups);
+trError = zeros(1, groups);
+teError = zeros(1, groups);
 
 for groupNumber = 1:groups
     %% Separe X and y in train and test parts
@@ -16,8 +16,12 @@ for groupNumber = 1:groups
     yTrPred = predict( XTr, yTr, XTr );
     yTePred = predict( XTr, yTr, XTe );
     
-    trRMSE(groupNumber) = computeRMSE(yTr, yTrPred);
-    teRMSE(groupNumber) = computeRMSE(yTe, yTePred);
+    % RMSE
+%     trError(groupNumber) = computeRMSE(yTr, yTrPred);
+%     teError(groupNumber) = computeRMSE(yTe, yTePred);
+    % Loss function
+    trError(groupNumber) = computeLoss(yTr, yTrPred);
+    teError(groupNumber) = computeLoss(yTe, yTePred);
     
 end
 
