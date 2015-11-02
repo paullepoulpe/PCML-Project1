@@ -77,9 +77,9 @@ We also computed the eigenvalues of the matrix $X^T X$. As ten eigenvalues are s
 
 \begin{figure}[!h] % !t
 \center
-\subfigure[$y$ in function of $55^{th}$ dimension of $X$.]{\includegraphics[width=2.2in]{figures/dim6.png} \label{fig:reg_dim6}}
+\subfigure[$y$ in function of $55^{th}$ dimension of $X$.]{\includegraphics[width=2in]{figures/dim6.png} \label{fig:reg_dim6}}
 \hfill
-\subfigure[$y$ in function of $6^{th}$ dimension of $X$.]{\includegraphics[width=2.2in]{figures/dim55.png} \label{fig:reg_dim55}}
+\subfigure[$y$ in function of $6^{th}$ dimension of $X$.]{\includegraphics[width=2in]{figures/dim55.png} \label{fig:reg_dim55}}
 \caption{Graphs of $y$ in function of the input dimensions most correlated with the output.}
 \end{figure}
 
@@ -123,12 +123,12 @@ We applied least-squares, least-squares with gradient descent and ridge regressi
 
 We computed the RMSE for each model with and without the categorical dimensions of X. As removing those dimensions does not change significantly the error, we decided to compute the regression only with the 60 real-valued dimensions.
 
-Figure ~\ref{fig:reg_alphaRMSE} shows the train and test RMSE for a step size $\alpha$ varied from $10^{-3}$ to $10^{-0.5}$ with $20$ points in between. The convergence condition was reached when the variation of $\beta$ between two iterations was lower than $1.5 \alpha$. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. We observe that the bias is higher and the variance globally lower for small values of $\alpha$. The RMSE is optimal for $\alpha \approx 0.2$. With higher $\alpha$ values, gradient descent is not able to converge and the error goes to $\infty$.
+Figure ~\ref{fig:reg_alphaRMSE} shows the train and test RMSE for a step size $\alpha$ varied from $10^{-3}$ to $10^{-0.5}$ with $20$ points in between. The convergence condition was reached when the variation of $\beta$ between two iterations was lower than $1.5 \alpha$. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. Train and test RMSE is optimal for $\alpha \approx 0.2$. With higher $\alpha$ values, gradient descent is not able to converge and the error goes to $\infty$.
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=3in]{figures/alphaRMSEBox.png}
-	\caption{Ridge regression for a $66 \%$ - $33 \%$ split with 3 iterations for each $\lambda$.}
+	\includegraphics[width=2.6in]{figures/alphaRMSE.png}
+	\caption{Least-squares with gradient descent for a $66 \%$ - $33 \%$ split with 3 iterations for each $\alpha$.}
 	\label{fig:reg_alphaRMSE}
 \end{figure}
 
@@ -136,7 +136,7 @@ Figure ~\ref{fig:reg_lambdaRMSE} shows the train and test RMSE for $\lambda$ var
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=3in]{figures/lambdaRMSE.png}
+	\includegraphics[width=2.6in]{figures/lambdaRMSE.png}
 	\caption{Ridge regression for a $66 \%$ - $33 \%$ split with 3 iterations for each $\lambda$.}
 	\label{fig:reg_lambdaRMSE}
 \end{figure}
@@ -146,7 +146,7 @@ Figure ~\ref{fig:reg_compareMethods} compares three regression methods with $\al
 \begin{figure}[!h] % !t
 	\center
 	\includegraphics[width=3in]{figures/comparisonReg.png}
-	\caption{Boxplots of train and test RMSE for least-squares (LS), least-squares with gradient descent (LS-GD) and ridge regression (Ridge).}
+	\caption{Boxplots of train and test RMSE for least-squares (LS), least-squares with gradient descent (LS-GD) and ridge regression (Ridge) with $100$ iterations for each method.}
 	\label{fig:reg_compareMethods}
 \end{figure}
 
@@ -165,9 +165,9 @@ We also computed the eigenvalues of the matrix $X^{T}X$. As the smaller eigenval
 
 \begin{figure}[!h] % !t
 	\center
-	\subfigure[Histogram of the $23^{th}$ dimension of $X$.]{\includegraphics[width=2.6in]{figures/dim23.png} \label{fig:class_dim23}}
+	\subfigure[Histogram of the $23^{th}$ dimension of $X$.]{\includegraphics[width=2.1in]{figures/dim23.png} \label{fig:class_dim23}}
 	\hfill
-	\subfigure[Histogram of the $35^{th}$ dimension of $X$.]{\includegraphics[width=2.6in]{figures/dim35.png} \label{fig:class_dim35}}
+	\subfigure[Histogram of the $35^{th}$ dimension of $X$.]{\includegraphics[width=2.1in]{figures/dim35.png} \label{fig:class_dim35}}
 	\caption{Example of histogram to show the distribution of $X$ dimensions. We can see that each distribution is composed of a peak in blue and of a Gaussian in red, separable given the $20^{th}$ variable.}
 \end{figure}
 
@@ -181,12 +181,12 @@ After the clustering of the test-data, each group is also treated separately. Th
 \subsection{Logistic Regression}
 We applied logistic regression and penalised logistic regression on our dataset. Both regressions were implemented with Newton's method. To improve the convergence, the step size was adapted at each time step to be proportional to the log likelihood such that $\alpha = log(\ell) * 10^{-4}$. The convergence criterion was reached when the difference between $\beta$ between two consecutive iterations was lower than $0.001$.
 
-Figure ~\ref{fig:class_penLogistic} shows the train and test loss function for $\lambda$ varied from $10^{-3}$ to $1$.
+Figure ~\ref{fig:class_penLogistic} shows the train and test loss function for $\lambda$ varied from $10^{-3}$ to $1$. We observe that changing $\lambda$ does not really improve the train and test loss function. The difference of error between train and test shows that the model is over-fitting. This is surely due to the amount of train data compared to the amount of test data, which is not high enough. However, we chose this split to make a cross-validation with similar train/test quantities to those we are provided to make output prediction.
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=3in]{figures/comparisonReg.png}
-	\caption{Boxplots of train and test loss function for penalised logistic regression in function of $\lambda$.}
+	\includegraphics[width=2.6in]{figures/lambdaLossBox.png}
+	\caption{Penalised logistic regression for a $50 \% - 50\%$ split with 3 iterations for each $\lambda$.}
 	\label{fig:class_penLogistic}
 \end{figure}
 
@@ -202,5 +202,8 @@ We would like to thank Zo\'e Baraschi for her support. She was there to help us 
 We also collaborated efficiently to generate all the code and the report.
 
 \subsubsection*{References}
+Applied Machine Learning course notes from Aude Billard
+
+PCML course notes from Mohammad Emtiyaz Khan
 
 \end{document}
