@@ -1,4 +1,4 @@
-function [ yPred ] = predictRegression( XTr, yTr, XTe, param )
+function [ yPred ] = predictRegression( XTr, yTr, XTe, localPredictor )
 %predictRegression Prediction function for the regression
 
 %% Find cardinalities of dimensions
@@ -54,8 +54,10 @@ for cl = 1:numClusters
     % Compute regression
 %     beta{cl,1} = leastSquaresGD(yTrF{cl,1}, tXTr{cl,1}, param);
 %     beta{cl,1} = leastSquares(yTrF{cl,1}, tXTr{cl,1});
-    beta{cl,1} = ridgeRegression(yTrF{cl,1}, tXTr{cl,1}, param);
-    
+ %   beta{cl,1} = ridgeRegression(yTrF{cl,1}, tXTr{cl,1}, param);
+ 
+    beta{cl, 1} = localPredictor(yTrF{cl,1}, tXTr{cl,1});
+ 
 %     figure()
 %     plot(XTrKept(:,1),yTrF{cl,1},'*');
 end
