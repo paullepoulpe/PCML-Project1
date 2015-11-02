@@ -51,15 +51,18 @@ w = [min(X(:,2)):1:max(X(:,2))];
 
 degree = 1;
 tXTr = [ones(length(y), 1) X];
-tXTe = [ones(length(hx), 1) hx wx];
-
 beta = leastSquares(y,tXTr);
 
-pred = beta(1)+beta(2)*hx+beta(3)*wx;
+for i=1:size(hx,1)
+    for j=1:size(hx,2)
+        pred(i,j) = beta(1)+beta(2)*hx(i,j)+beta(3)*wx(i,j);
+    end
+end
 
 % plot the decision surface
 figure()
 contourf(hx, wx, pred, 1);
+colormap(jet)
 % plot indiviual data points
 hold on
 myBlue = [0.06 0.06 1];
