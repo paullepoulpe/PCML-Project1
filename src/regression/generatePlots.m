@@ -26,7 +26,7 @@ histogram(y_train);
 xl = xlabel('y values');
 yl = ylabel('Frequency');
 setFontSize(gca, gcf, xl, yl);
-print -dpdf 'plots/y_histogram.pdf';
+print -dpng 'plots/y_histogram.png';
 close;
 
 %% Dimension 55
@@ -35,7 +35,7 @@ plot(X_train(:, 55), y_train, '*');
 xl = xlabel('55th dimension');
 yl = ylabel('y');
 setFontSize(gca, gcf, xl, yl);
-print -dpdf 'plots/dim55.pdf';
+print -dpng 'plots/dim55.png';
 close;
 
 %% Dimension 6
@@ -44,7 +44,7 @@ plot(X_train(:, 6), y_train, '*');
 xl = xlabel('6th dimension');
 yl = ylabel('y');
 setFontSize(gca, gcf, xl, yl);
-print -dpdf 'plots/dim6.pdf';
+print -dpng 'plots/dim6.png';
 close;
 
 %% Plot trained clusters
@@ -58,7 +58,7 @@ legend('Cluster 1', 'Cluster 2', 'Cluster 3','Location','northwest');
 xl = xlabel('55th dimension');
 yl = ylabel('6th dimension');
 setFontSize(gca, gcf, xl, yl);
-print -dpdf 'plots/clusters_train.pdf';
+print -dpng 'plots/clusters_train.png';
 close;
 
 %% Plot test clusters phase 1
@@ -73,7 +73,7 @@ legend('Cluster 1', 'Cluster 2','Location','northwest');
 xl = xlabel('55th dimension');
 yl = ylabel('6th dimension');
 setFontSize(gca, gcf, xl, yl);
-print -dpdf 'plots/clusters_phase1.pdf';
+print -dpng 'plots/clusters_phase1.png';
 close;
 
 %% Plot test clusters phase 2
@@ -88,7 +88,7 @@ legend('SubCluster 1', 'SubCluster 2','Location','northwest');
 xl = xlabel('55th dimension');
 yl = ylabel('6th dimension');
 setFontSize(gca, gcf, xl, yl);
-print -dpdf 'plots/clusters_phase2.pdf';
+print -dpng 'plots/clusters_phase2.png';
 close;
 
 %% Plot lambda vs RMSE for ridge regression
@@ -124,6 +124,6 @@ yl = ylabel('Test RMSE');
 setFontSize(gca, gcf, xl, yl);
 
 linkaxes(ax);
-print -dpdf 'plots/lambdaRMSE.pdf';
+print -dpng 'plots/lambdaRMSE.png';
 close;
 
