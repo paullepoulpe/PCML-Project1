@@ -68,7 +68,7 @@ separated in three clusters by looking at $x_n(6)$ ans $x_n(55)$ for each data.
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=2.6in]{figures/y_histogram.png}
+	\includegraphics[width=2.2in]{figures/y_histogram.png}
 	\caption{Histogram of $y$. We can see three bursts of data.}
 	\label{fig:reg_yHistogram}
 \end{figure}
@@ -77,9 +77,9 @@ We also computed the eigenvalues of the matrix $X^T X$. As ten eigenvalues are s
 
 \begin{figure}[!h] % !t
 \center
-\subfigure[$y$ in function of $55^{th}$ dimension of $X$.]{\includegraphics[width=2.6in]{figures/dim6.png} \label{fig:reg_dim6}}
+\subfigure[$y$ in function of $55^{th}$ dimension of $X$.]{\includegraphics[width=2.2in]{figures/dim6.png} \label{fig:reg_dim6}}
 \hfill
-\subfigure[$y$ in function of $6^{th}$ dimension of $X$.]{\includegraphics[width=2.6in]{figures/dim55.png} \label{fig:reg_dim55}}
+\subfigure[$y$ in function of $6^{th}$ dimension of $X$.]{\includegraphics[width=2.2in]{figures/dim55.png} \label{fig:reg_dim55}}
 \caption{Graphs of $y$ in function of the input dimensions most correlated with the output.}
 \end{figure}
 
@@ -89,7 +89,7 @@ As the data are not equally shared between the three clusters, we first compute 
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=2.6in]{figures/clusters_train.png}
+	\includegraphics[width=2.2in]{figures/clusters_train.png}
 	\caption{Clusters obtained along the two most correlated dimensions. We can see three clearly delimited groups of data.}
 	\label{fig:reg_clustersTrain}
 \end{figure}
@@ -102,9 +102,9 @@ Figure ~\ref{fig:reg_clustersTest} shows an example of k-means clustering for te
 
 \begin{figure}[!h] % !t
 	\center
-	\subfigure[First k-means applied along the most correlated dimension of $X$ with $y$.]{\includegraphics[width=2.6in]{figures/clusters_phase1.png} \label{fig:reg_clustersTest1}}
+	\subfigure[First k-means applied along the most correlated dimension of $X$ with $y$.]{\includegraphics[width=2.2in]{figures/clusters_phase1.png} \label{fig:reg_clustersTest1}}
 	\hfill
-	\subfigure[Second k-means applied along the second most correlated dimension of $X$ with $y$.]{\includegraphics[width=2.6in]{figures/clusters_phase2.png} \label{fig:reg_clustersTest2}}
+	\subfigure[Second k-means applied along the second most correlated dimension of $X$ with $y$.]{\includegraphics[width=2.2in]{figures/clusters_phase2.png} \label{fig:reg_clustersTest2}}
 	\caption{Steps of k-means clustering for test-data.}
 	\label{fig:reg_clustersTest}
 \end{figure}
@@ -123,25 +123,32 @@ We applied least-squares, least-squares with gradient descent and ridge regressi
 
 We computed the RMSE for each model with and without the categorical dimensions of X. As removing those dimensions does not change significantly the error, we decided to compute the regression only with the 60 real-valued dimensions.
 
-Figure ~\ref{fig:reg_alphaRMSE} shows the train and test RMSE for a step size $\alpha$ varied from $10^{-3}$ to $10^{-0.5}$ with $20$ points in between. The convergence condition was reached when the variation of $\beta$ between two iterations was lower than $1.5 \alpha$. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data.
+Figure ~\ref{fig:reg_alphaRMSE} shows the train and test RMSE for a step size $\alpha$ varied from $10^{-3}$ to $10^{-0.5}$ with $20$ points in between. The convergence condition was reached when the variation of $\beta$ between two iterations was lower than $1.5 \alpha$. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. We observe that the bias is higher and the variance globally lower for small values of $\alpha$. The RMSE is optimal for $\alpha \approx 0.2$. With higher $\alpha$ values, gradient descent is not able to converge and the error goes to $\infty$.
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=4in]{figures/lambdaRMSE.png}
+	\includegraphics[width=3in]{figures/alphaRMSEBox.png}
 	\caption{Ridge regression for a $66 \%$ - $33 \%$ split with 3 iterations for each $\lambda$.}
 	\label{fig:reg_alphaRMSE}
 \end{figure}
 
-Figure ~\ref{fig:reg_lambdaRMSE} shows the train and test RMSE for $\lambda$ varied from $10^{-3}$ to $10^{7}$ with $60$ points in between. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. We can see that $\lambda$ should be chosen between $0$ and $100$ to have the best prediction and that $\lambda$ higher than $1000$ increases the RMSE and the model under-fits.
+Figure ~\ref{fig:reg_lambdaRMSE} shows the train and test RMSE for $\lambda$ varied from $10^{-3}$ to $10^{7}$ with $60$ points in between. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. We can see that $\lambda$ should be chosen between $0$ and $100$ to have the best prediction and that $\lambda$ higher than $1000$ increases the RMSE and the model under-fits. For high $\lambda$ values, the model and estimation bias are increased as their variance is reduced.
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=4in]{figures/lambdaRMSE.png}
+	\includegraphics[width=3in]{figures/lambdaRMSE.png}
 	\caption{Ridge regression for a $66 \%$ - $33 \%$ split with 3 iterations for each $\lambda$.}
 	\label{fig:reg_lambdaRMSE}
 \end{figure}
 
-Figure TODO compares the three regression methods with $\alpha = TODO$ for the gradient descent and $\lambda = TODO$ for ridge regression. We see that TODO.
+Figure ~\ref{fig:reg_compareMethods} compares three regression methods with $\alpha = 0.25$ for the gradient descent and $\lambda = 100$ for ridge regression. We see that TODO.
+
+\begin{figure}[!h] % !t
+	\center
+	\includegraphics[width=4in]{figures/lambdaRMSE.png}
+	\caption{Boxplots of train and test RMSE for least-squares, least-square with gradient descent and ridge regression.}
+	\label{fig:reg_compareMethods}
+\end{figure}
 
 \section{Classification}
 \subsection{Data Description}
@@ -175,7 +182,8 @@ We applied logistic regression and penalised logistic regression on our dataset.
 Figure TODO shows the train and test TODO ERROR for $\lambda$ varied from
 
 \section{Summary}
-In this report, we ...
+In this report, we analyse a regression and a classification dataset. We used k-means clustering and PCA to preprocess the regression data. We found that TODO.
+We separated the classification data using a binary dimension that classify the data in two different distributions along the variable of the input data.We found that TODO.
 
 
 \subsubsection*{Acknowledgments}
