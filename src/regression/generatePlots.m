@@ -137,26 +137,6 @@ linkaxes(ax);
 print -dpng 'plots/lambdaRMSE.png';
 close;
 
-% Boxplots
-ax(1) = subplot(211);
-boxplot(trRMSE,'plotstyle','compact','colors','b','labels',lambda);
-xl = xlabel('Lambda');
-yl = ylabel('Train RMSE');
-ylim([450 800])
-xlim([10^-3 10^7])
-setFontSize(gca, gcf, xl, yl);
-
-ax(2) = subplot(212);
-boxplot(teRMSE,'plotstyle','compact','colors','b','labels',lambda);
-xl = xlabel('Lambda');
-yl = ylabel('Test RMSE');
-setFontSize(gca, gcf, xl, yl);
-
-linkaxes(ax);
-print -dpng 'plots/lambdaRMSEBox.png';
-close;
-
-
 %% Plot alpha vs RMSE for gradient descent
 
 [ trRMSE, teRMSE, alpha ] = findBestGDAlpha(X_train, y_train);
@@ -191,7 +171,7 @@ setFontSize(gca, gcf, xl, yl);
 
 linkaxes(ax);
 print -dpng 'plots/alphaRMSE.png';
-
+close;
 
 % BoxPlot
 figure();
@@ -209,3 +189,43 @@ setFontSizeNoTouchTicks(gca, gcf, xl, yl);
 
 linkaxes(ax);
 print -dpng 'plots/alphaRMSEBox.png';
+close;
+
+%% Plot ridge vs leastSquares vs leastSquaresGD
+
+lambda = 100;
+alpha = 0.25;
+groups = 3;
+numIterations = 100;
+
+ridgePredictor = @(y, tX) ridgeRegression(y, tX, lambda);
+leastSquaresPredictor = @leastSquares;
+leastSquaresGDPredictor = @(y, tX) leastSquaresGD(y, tX, alpha);
+
+ridgePredict = @(Xtr, ytr, Xte){
+    predictRegression(Xtr, ytr, Xte, ridgePredictor);
+};
+leastSquaresPredict = @(Xtr, ytr, Xte){
+    predictRegression(Xtr, ytr, Xte, ridgePredictor);
+};
+
+leastSquaresGDPredict = @(Xtr, ytr, Xte){
+    predictRegression(Xtr, ytr, Xte, ridgePredictor);
+};
+
+
+for i = 1:numIterations 
+    fprintf('Start of iteration %d\n', i);
+    [trError, teError] = crossValidation(X_train, y_train, groups, ridgePredict, false);
+    ridgeTrRMSE(i) = mean(trError.RMSE);
+    ridgeTeRMSE(i) = mean(teError.RMSE);
+    
+    [trError, teError] = crossValidation(X_train, y_train, groups, leastSquaresPredict, false);
+    leastSquaresTrRMSE(i) = mean(trError.RMSE);
+    leastSquaresTeRMSE(i) = mean(teError.RMSE);
+    
+    [trError, teError] = crossValidation(X_train, y_train, groups, leastSquaresGDPredict, false);
+    leastSquaresGDTrRMSE(i) = mean(trError.RMSE);
+    eastSquaresGDTeRMSE(i) = mean(teError.RMSE);
+end
+
