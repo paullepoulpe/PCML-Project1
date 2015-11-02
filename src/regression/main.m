@@ -15,3 +15,13 @@ load('../../data/SaoPaulo_regression.mat')
 semilogx(lambda, teRMSE, 'r*-')
 hold on
 semilogx(lambda, trRMSE, 'b*-')
+
+%%
+figure()
+ax(1) = subplot(211);
+boxTr = boxplot(trRMSE,'plotstyle','compact','colors','b','labels',lambda);
+ax(2) = subplot(212);
+hold on
+boxTe = boxplot(teRMSE,'plotstyle','compact','colors','r');
+linkaxes(ax);
+%ylim([0.05 0.12])
