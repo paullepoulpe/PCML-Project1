@@ -1,7 +1,8 @@
 % load data
-clear all
-load('dataEx3.mat');
-
+% clear all
+% load('dataEx3.mat');
+X = X_train(:,1);
+y = y_train;
 % basis function models
 vals = [1 3 7 12];
 for k = 1:length(vals)
