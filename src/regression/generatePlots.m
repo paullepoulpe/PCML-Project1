@@ -229,3 +229,15 @@ for i = 1:numIterations
     eastSquaresGDTeRMSE(i) = mean(teError.RMSE);
 end
 
+%%
+figure()
+ax(1) = subplot(121);
+boxplot([leastSquaresTrRMSE' leastSquaresGDTrRMSE' ridgeTrRMSE'],'labels',{'least-squares','least-squares GD','ridge regression'});
+ylabel('Train RMSE')
+ax(2) = subplot(122);
+boxplot([leastSquaresTeRMSE' eastSquaresGDTeRMSE' ridgeTeRMSE'],'labels',{'least-squares','least-squares GD','ridge regression'});
+ylabel('Test RMSE')
+
+
+
+
