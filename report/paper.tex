@@ -39,7 +39,7 @@ EPFL \\
 \maketitle
 
 \begin{abstract}
-In this report, ...
+In this report, we 
 \end{abstract}
 
 \section{Regression}
@@ -70,7 +70,7 @@ We also computed the eigenvalues of the matrix $X^T X$. As ten eigenvalues are s
 
 \subsection{Clustering}
 We used k-means clustering to separate our data during the training part. The clustering is always done before normalising the data.
-As the data are not equally shared between the three clusters, we first compute a clustering with $k=2$ clusters using $y$ and the most correlated dimension of $X$ with $y$ to compute the distance between each data-point and centre. Then, we keep only the data classified in the sparse cluster to make a second clustering with $k=2$ using $y$ and the second most correlated dimension of $X$. Figure ~\ref{fig:reg_clustersTrain} shows an example of clusters obtained after the training.
+As the data are not equally shared between the three clusters, we first compute a clustering with $k=2$ clusters using $y$ and the most correlated dimension of $X$ with $y$ to compute the distance between each data-point and centre. In a second step, we keep only the data classified in the sparse cluster to make a second clustering with $k=2$ using $y$ and the second most correlated dimension of $X$. Figure ~\ref{fig:reg_clustersTrain} shows an example of clusters obtained after the training.
 
 \begin{figure}[!h] % !t
 	\center
@@ -97,14 +97,36 @@ Figure ~\ref{fig:reg_clustersTest} shows an example of k-means clustering for te
 \subsection{Feature transformations}
 After the separation in cluster, each group of train-data is treated separately. For each cluster, the dimensions of $X$ and $y$ are normalised to have zero-mean and unitary standard deviation. We also implemented a method to fix the outliers and a PCA to improve our predictions. 
 
-We defined as outliers the data-points for which some elements of one or more real-valued dimensions are further than 3 standard deviations from the mean. As our data were normalised, all non-categorical element higher than 3 were considered as an outlier element. To fix the outliers, value $3$ (or $-3$) was assigned to those elements.
+We defined as outliers the data-points for which some elements of one or more real-valued dimensions are further than 3 standard deviations from the mean. As our data were normalised, all non-categorical element higher than 3 were considered as outlier elements. To fix the outliers, value $3$ (or $-3$) was assigned to those elements. Fixing the outliers with this methods allows us to avoid errors in prediction models due to false-classified data.
 
-The PCA is applied only on the real-valued dimensions. It projects our input data in a new coordinate system based on the covariance between dimensions. It allows us to reduce the dimensionality of our data in this new space by removing the dimensions with eigenvalues lower than 1. The data are then projected back in the initial coordinate system. In our case, the PCA reduce our input data by eleven dimensions.
+The PCA is applied only on the real-valued dimensions. It projects our input data in a new coordinate system based on the covariance between dimensions. It allows us to reduce the dimensionality of our data in this new space by removing the dimensions with eigenvalues lower than a defined value. We choose this value equal to $1$ as eleven dimensions have eigenvalues in the order of $10^{-10}$ and all others are higher than $10$. The data are then projected back in the initial coordinate system. In our case, the PCA reduce our input data by eleven dimensions.
 
 After the clustering of test-data, each group is also treated separately. The data are first normalised given the means and standard deviations computed during the training. The outliers are then fixed and PCA is applied by projecting the data with the eigenvectors computed during the training part.
 
-\subsection{Methods}
-We applied least-squares and ridge regression to this dataset... (remove non-real-valued dimensions)
+\subsection{Least-Squares and Ridge Regression}
+We applied least-squares, least-squares with gradient descent and ridge regression to our dataset. Using PCA allows us to solve the problem of ill-conditioned matrix, so that we can use the three methods mentioned above. The ridge regression is the only method that can be used without reducing the dimensionality of the input data.
+
+We computed the RMSE for each model with and without the categorical dimensions of X. As removing those dimensions does not change significantly the error, we decided to compute the regression only with the 60 real-valued dimensions.
+
+Figure ~\ref{fig:reg_alphaRMSE} shows the train and test RMSE for a step size $\alpha$ varied from $10^{-3}$ to $10^{-0.5}$ with $20$ points in between. The convergence condition was reached when the variation of $\beta$ between two iterations was lower than $1.5 \alpha$. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data.
+
+\begin{figure}[!h] % !t
+	\center
+	\includegraphics[width=4in]{figures/lambdaRMSE.png}
+	\caption{Ridge regression for a $66 \%$ - $33 \%$ split with 3 iterations for each $\lambda$.}
+	\label{fig:reg_alphaRMSE}
+\end{figure}
+
+Figure ~\ref{fig:reg_lambdaRMSE} shows the train and test RMSE for $\lambda$ varied from $10^{-3}$ to $10^{7}$ with $60$ points in between. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. We can see that $\lambda$ should be chosen between $0$ and $100$ to have the best prediction and that $\lambda$ higher than $1000$ increases the RMSE and the model under-fits.
+
+\begin{figure}[!h] % !t
+	\center
+	\includegraphics[width=4in]{figures/lambdaRMSE.png}
+	\caption{Ridge regression for a $66 \%$ - $33 \%$ split with 3 iterations for each $\lambda$.}
+	\label{fig:reg_lambdaRMSE}
+\end{figure}
+
+Figure TODO compares the three regression methods with $\alpha = TODO$ for the gradient descent and $\lambda = TODO$ for ridge regression. We see that TODO.
 
 \section{Classification}
 \subsection{Data Description}
@@ -126,14 +148,14 @@ We also computed the eigenvalues of the matrix $X^{T}X$. As the smaller eigenval
 \end{figure}
 
 \subsection{Feature Transformations}
-The train-data are first separated in two clusters given the value of the 20th dimension of $X$. Each group of data are then treated separately. $X$ real-valued variables are first normalised to have zero-mean and unitary standard deviation. We also implemented a method to remove the outliers.
+The train-data are first separated in two clusters given the value of the 20th dimension of $X$. Each group of data are then treated separately. The real-valued variables of $X$ are first normalised to have zero-mean and unitary standard deviation. We also implemented a method to remove the outliers.
 
 We defined as outliers the data-points for which at least one element of a real-valued dimension is further than 3 standard deviations from the mean. In this case, the data point is removed from the training set. 
 
 After the clustering of the test-data, each group is also treated separately. The real-valued input data are normalised given the means and standard deviations computed during the training.
 
 \subsection{Logistic Regression}
-
+We applied logistic regression and penalised logistic regression on our dataset. Both regressions were implemented with Newton's method. To improve the convergence, the step size was adapted at each time step to be proportional to the log likelihood such that $\alpha = log(\ell) * 10^{-4}$. The convergence criterion was reached when the difference between $\beta$ between two consecutive iterations was lower than $0.001$.
 
 \section{Summary}
 In this report, we ...
