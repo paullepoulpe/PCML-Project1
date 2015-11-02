@@ -95,3 +95,59 @@ ylim([0 0.15])
 print -dpng 'plots/lambdaLossBox.png';
 close;
 
+%% BoxPlots of PenLogistic Regression vs Logistic
+
+lambda = 0.01;
+groups = 3;
+numIterations = 2;
+
+penLogisticPredictor = @(y, tX) penLogisticRegression(y, tX, 0.001, lambda);
+logisticPredictor = @(y, tX) logisticRegression(y, tX, 0.001);
+
+penLogPredict = @(Xtr, ytr, Xte){
+    predictClassification(Xtr, ytr, Xte, penLogisticPredictor);
+};
+
+logPredict = @(Xtr, ytr, Xte){
+    predictClassification(Xtr, ytr, Xte, logisticPredictor);
+};
+
+penLogTrLoss = zeros(1, numIterations);
+penLogTeLoss = zeros(1, numIterations);
+
+logTrLoss = zeros(1, numIterations);
+logTeLoss = zeros(1, numIterations);
+
+
+for i = 1:numIterations 
+    fprintf('Start of iteration %d\n', i);
+    [trError, teError] = crossValidation(X_train, y_train, groups, penLogPredict, true);
+    penLogTrLoss(i) = mean(trError.Loss);
+    penLogTeLoss(i) = mean(teError.Loss);
+    disp(size(trError))
+    trError
+    disp(size(penLogTrLoss))
+    penLogTrLoss
+    
+    [trError, teError] = crossValidation(X_train, y_train, groups, logPredict, true);
+    logTrLoss(i) = mean(trError.Loss);
+    logTeLoss(i) = mean(teError.Loss);
+    disp(size(trError))
+    trError
+    disp(size(logTrLoss))
+    logTrLoss
+    fprintf('End of iteration %d\n', i);
+end
+
+%%
+figure()
+ax(1) = subplot(121);
+boxplot([penLogTrLoss' logTrLoss'],...
+    'labels',{'PenLog','Log'});
+ylabel('Train RMSE')
+%ylim([400 700])
+ax(2) = subplot(122);
+boxplot([penLogTeLoss' logTeLoss'],...
+    'labels',{'PenLog','Log'});
+ylabel('Test RMSE')
+%ylim([400 700])
