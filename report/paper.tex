@@ -39,7 +39,7 @@ EPFL \\
 \maketitle
 
 \begin{abstract}
-In this report, we study several linear method to compute regression and classification on two different datasets. For the regression part, we used k-means clustering to separate the data in three clusters. As the input matrix is ill-conditioned, we applied a PCA algorithm to reduce its dimensionality. WHICH ALGORITHM IS THE BEST; IDEA OF ERROR. For the classification part, we separate the data given their distribution along the dimensions of the input. WHICH ALGORITHM IS THE BEST; IDEA OF ERROR.
+In this report, we study several linear method to compute regression and classification on two different datasets. For the regression part, we used k-means clustering to separate the data in three clusters. As the input matrix is ill-conditioned, we applied a PCA algorithm to reduce its dimensionality. We observe that the three methods are equivalent, with RMSE around $520$ for train and for test parts. For the classification part, we separate the data given their distribution along the dimensions of the input. WHICH ALGORITHM IS THE BEST; IDEA OF ERROR.
 \end{abstract}
 
 \section{Regression}
@@ -141,11 +141,11 @@ Figure ~\ref{fig:reg_lambdaRMSE} shows the train and test RMSE for $\lambda$ var
 	\label{fig:reg_lambdaRMSE}
 \end{figure}
 
-Figure ~\ref{fig:reg_compareMethods} compares three regression methods with $\alpha = 0.25$ for the gradient descent and $\lambda = 100$ for ridge regression. We see that TODO.
+Figure ~\ref{fig:reg_compareMethods} compares three regression methods with $\alpha = 0.25$ for the gradient descent and $\lambda = 100$ for ridge regression. We see that the three methods give equivalent results. This is surely the consequence of preprocessing the data with PCA, so that the input matrix is not ill conditioned.
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=4in]{figures/lambdaRMSE.png}
+	\includegraphics[width=4in]{figures/comparisonReg.png}
 	\caption{Boxplots of train and test RMSE for least-squares, least-square with gradient descent and ridge regression.}
 	\label{fig:reg_compareMethods}
 \end{figure}
@@ -183,7 +183,7 @@ Figure TODO shows the train and test TODO ERROR for $\lambda$ varied from
 
 \section{Summary}
 In this report, we analyse a regression and a classification dataset. We used k-means clustering and PCA to preprocess the regression data. We found that TODO.
-We separated the classification data using a binary dimension that classify the data in two different distributions along the variable of the input data.We found that TODO.
+We separated the classification data using a binary dimension that classify the data in two different distributions along the variable of the input data. We found that TODO.
 
 
 \subsubsection*{Acknowledgments}
