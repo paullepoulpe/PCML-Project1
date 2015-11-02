@@ -12,10 +12,6 @@ load('../../data/SaoPaulo_regression.mat')
 
 [ trRMSE, teRMSE, lambda ] = crossValidationParam(X_train, y_train, 3, @predictRegression, 4);
 
-semilogx(lambda, teRMSE, 'r*-')
-hold on
-semilogx(lambda, trRMSE, 'b*-')
-
 %%
 figure()
 ax(1) = subplot(211);
