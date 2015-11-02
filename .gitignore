@@ -1,4 +1,8 @@
+# Temporary files
+*.asv
 *~
+
+# Generated elements
 /report/paper.pdf
 /report/paper.aux
 /report/paper.out
@@ -11,5 +15,6 @@
 /src/regression/results
 /src/classification/results
 
+# Extra data
 /data/*
 !/data/SaoPaulo*
