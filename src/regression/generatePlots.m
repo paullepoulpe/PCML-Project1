@@ -54,7 +54,7 @@ hold on;
 plot(X_train(cluster == 1, 55), X_train(cluster == 1, 6), 'r*');
 plot(X_train(cluster == 2, 55), X_train(cluster == 2, 6), 'b*');
 plot(X_train(cluster == 3, 55), X_train(cluster == 3, 6), '*', 'MarkerEdgeColor', [0,0.5,0]);
-legend('Cluster 1', 'Cluster 2', 'Cluster 3');
+legend('Cluster 1', 'Cluster 2', 'Cluster 3','Location','northwest');
 xl = xlabel('55th dimension');
 yl = ylabel('6th dimension');
 setFontSize(gca, gcf, xl, yl);
@@ -69,7 +69,7 @@ cluster = predict(X_test);
 plot(X_test(cluster == 3, 55), X_test(cluster == 3, 6), 'b*');
 plot(X_test(cluster == 1, 55), X_test(cluster == 1, 6), 'r*');
 plot(X_test(cluster == 2, 55), X_test(cluster == 2, 6), 'r*');
-legend('Cluster 1', 'Cluster 2');
+legend('Cluster 1', 'Cluster 2','Location','northwest');
 xl = xlabel('55th dimension');
 yl = ylabel('6th dimension');
 setFontSize(gca, gcf, xl, yl);
@@ -84,7 +84,7 @@ cluster = predict(X_test);
 plot(X_test(cluster == 1, 55), X_test(cluster == 1, 6), '*', 'MarkerEdgeColor', [0,0,0]);
 plot(X_test(cluster == 2, 55), X_test(cluster == 2, 6), '*', 'MarkerEdgeColor', [1,0,1]);
 plot(X_test(cluster == 3, 55), X_test(cluster == 3, 6), 'w*');
-legend('SubCluster 1', 'SubCluster 2');
+legend('SubCluster 1', 'SubCluster 2','Location','northwest');
 xl = xlabel('55th dimension');
 yl = ylabel('6th dimension');
 setFontSize(gca, gcf, xl, yl);
@@ -107,8 +107,8 @@ grid on
 grid minor
 hold on
 semilogx(lambda, mean(trRMSE), '*b');
-xl = xlabel('Train RMSE');
-yl = ylabel('lambda');
+xl = xlabel('Lambda');
+yl = ylabel('Train RMSE');
 ylim([450 800])
 xlim([10^-3 10^7])
 setFontSize(gca, gcf, xl, yl);
@@ -119,11 +119,11 @@ grid on
 grid minor
 hold on
 semilogx(lambda, mean(teRMSE), '*r');
-xl = xlabel('Test RMSE');
-yl = ylabel('lambda');
+xl = xlabel('Lambda');
+yl = ylabel('Test RMSE');
 setFontSize(gca, gcf, xl, yl);
 
 linkaxes(ax);
-
-
+print -dpdf 'plots/lambdaRMSE.pdf';
+close;
 
