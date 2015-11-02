@@ -5,3 +5,9 @@
 /report/paper.out
 /report/paper.log
 /report/paper.synctex.gz
+
+/src/regression/plots
+/src/classification/plots
+
+/data/*
+!/data/SaoPaulo*
