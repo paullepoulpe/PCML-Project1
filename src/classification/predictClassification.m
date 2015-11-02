@@ -1,4 +1,4 @@
-function [ yPred, pPred ] = predictClassification( XTr, yTr, XTe, param )
+function [ yPred, pPred ] = predictClassification( XTr, yTr, XTe, localPredictor )
 %predictClassification Prediction function for the classification
 
 %% Separe data set in function of the 20th dimension of X
@@ -45,8 +45,9 @@ for cl = 1:sizeCluster
     
     % Compute (penalised) logistic regression
 %     beta{cl,1} = logisticRegression(yTrF{cl,1}, tXTr{cl,1}, 0.001);
-    beta{cl,1} = penLogisticRegression(yTrF{cl,1}, tXTr{cl,1}, 0.001, 0.01);
-
+%    beta{cl,1} = penLogisticRegression(yTrF{cl,1}, tXTr{cl,1}, 0.001, 0.01);
+    beta{cl,1} = localPredictor(yTrF{cl,1}, tXTr{cl,1});
+    
 end
 
 %% Test
