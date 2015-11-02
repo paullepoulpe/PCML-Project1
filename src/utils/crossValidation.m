@@ -1,15 +1,15 @@
-function [ trError, teError ] = crossValidation( X, y, groups, predict, computeLoss)
+function [ trError, teError ] = crossValidation( X, y, groups, predict, doComputeLoss)
 %crossValidationRegression Returns RMSE for train and test for this prediciton function
-% X             Data input
-% y             Output
-% groups        Number of groups to form
-% predict       The prediciton function
-% computeLoss   Set to true to compute loss
+% X                 Data input
+% y                 Output
+% groups            Number of groups to form
+% predict           The prediciton function
+% doComputeLoss     Set to true to compute loss
 
 trRMSE = zeros(1, groups);
 teRMSE = zeros(1, groups);
 
-if computeLoss
+if doComputeLoss
     trLoss = zeros(1, groups);
     teLoss = zeros(1, groups);
     trLogLoss = zeros(1, groups);
@@ -38,7 +38,7 @@ for groupNumber = 1:groups
     teRMSE(groupNumber) = computeRMSE(yTe, yTePred);
     
     % Loss function
-    if computeLoss
+    if doComputeLoss
         trLoss(groupNumber) = computeLoss(yTr, yTrPred);
         teLoss(groupNumber) = computeLoss(yTe, yTePred);
         
@@ -50,7 +50,7 @@ end
 trError.RMSE = trRMSE;
 teError.RMSE = teRMSE;
 
-if computeLoss
+if doComputeLoss
     trError.Loss = trLoss;
     teError.Loss = teLoss;
     
