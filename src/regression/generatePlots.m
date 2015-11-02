@@ -16,7 +16,17 @@ LABEL_FONT_SIZE = 20;
 setFontSize = @(gca, gcf, xl, yl) {
     set(gca, 'FontSize', FONT_SIZE); 
     set(findall(gcf,'type','text'), 'FontSize', FONT_SIZE); 
-    set(xl, 'FontSize', LABEL_FONT_SIZE); set(yl, 'FontSize', LABEL_FONT_SIZE)
+    set(xl, 'FontSize', LABEL_FONT_SIZE); set(yl, 'FontSize', LABEL_FONT_SIZE);
+    };
+
+setFontSizeNoTouchTicks = @(gca, gcf, xl, yl) {
+    %set(gca, 'FontSize', FONT_SIZE); 
+    %set(findall(gcf,'type','text'), 'FontSize', FONT_SIZE); 
+    set(xl, 'FontSize', LABEL_FONT_SIZE); set(yl, 'FontSize', LABEL_FONT_SIZE);
+    };
+
+getShortLabels = @(nums) {
+    arrayfun(@(x) sprintf('%.1E', x), nums, 'UniformOutput', false);
     };
 
 
@@ -93,20 +103,20 @@ close;
 
 %% Plot lambda vs RMSE for ridge regression
 
-[ trRMSE, teRMSE, lambda ] = crossValidationParam(X_train, y_train, 3, @predictRegression, 3);
+[ trRMSE, teRMSE, lambda ] = findBestRidgeLambda(X_train, y_train);
 
 %%
 figure()
-newLambda = logspace(-3, 7, 300);
+newLambda = logspace(log10(min(lambda)), log10(max(lambda)), 300);
 newTrRMSE = spline(lambda, mean(trRMSE), newLambda);
 newTeRMSE = spline(lambda, mean(teRMSE), newLambda);
 
 ax(1) = subplot(211);
-boxTr = semilogx(newLambda, newTrRMSE, '-b');
+semilogx(newLambda, newTrRMSE, '-b');
 grid on
 grid minor
 hold on
-semilogx(lambda, mean(trRMSE), '*b');
+semilogx(lambda, mean(trRMSE), '.b', 'MarkerSize', 20);
 xl = xlabel('Lambda');
 yl = ylabel('Train RMSE');
 ylim([450 800])
@@ -114,11 +124,11 @@ xlim([10^-3 10^7])
 setFontSize(gca, gcf, xl, yl);
 
 ax(2) = subplot(212);
-boxTe = semilogx(newLambda, newTeRMSE, '-r');
+semilogx(newLambda, newTeRMSE, '-r');
 grid on
 grid minor
 hold on
-semilogx(lambda, mean(teRMSE), '*r');
+semilogx(lambda, mean(teRMSE), '.r', 'MarkerSize', 20);
 xl = xlabel('Lambda');
 yl = ylabel('Test RMSE');
 setFontSize(gca, gcf, xl, yl);
@@ -127,3 +137,75 @@ linkaxes(ax);
 print -dpng 'plots/lambdaRMSE.png';
 close;
 
+% Boxplots
+ax(1) = subplot(211);
+boxplot(trRMSE,'plotstyle','compact','colors','b','labels',lambda);
+xl = xlabel('Lambda');
+yl = ylabel('Train RMSE');
+ylim([450 800])
+xlim([10^-3 10^7])
+setFontSize(gca, gcf, xl, yl);
+
+ax(2) = subplot(212);
+boxplot(teRMSE,'plotstyle','compact','colors','b','labels',lambda);
+xl = xlabel('Lambda');
+yl = ylabel('Test RMSE');
+setFontSize(gca, gcf, xl, yl);
+
+linkaxes(ax);
+print -dpng 'plots/lambdaRMSEBox.png';
+close;
+
+
+%% Plot alpha vs RMSE for gradient descent
+
+[ trRMSE, teRMSE, alpha ] = findBestGDAlpha(X_train, y_train);
+
+%%
+figure()
+newAlpha = logspace(log10(min(alpha)), log10(max(alpha)), 300);
+newTrRMSE = spline(alpha, mean(trRMSE), newAlpha);
+newTeRMSE = spline(alpha, mean(teRMSE), newAlpha);
+
+ax(1) = subplot(211);
+semilogx(newAlpha, newTrRMSE, '-b');
+grid on
+grid minor
+hold on
+semilogx(alpha, mean(trRMSE), '.b', 'MarkerSize', 20);
+xl = xlabel('Alpha');
+yl = ylabel('Train RMSE');
+ylim([450 800])
+xlim([10^-3 0.33])
+setFontSize(gca, gcf, xl, yl);
+
+ax(2) = subplot(212);
+semilogx(newAlpha, newTeRMSE, '-r');
+grid on
+grid minor
+hold on
+semilogx(alpha, mean(teRMSE), '.r', 'MarkerSize', 20);
+xl = xlabel('Alpha');
+yl = ylabel('Test RMSE');
+setFontSize(gca, gcf, xl, yl);
+
+linkaxes(ax);
+print -dpng 'plots/alphaRMSE.png';
+
+
+% BoxPlot
+figure();
+ax(1) = subplot(211);
+boxTr = boxplot(trRMSE,'plotstyle','compact','colors','b','labels', getShortLabels(alpha));
+xl = xlabel('Alpha');
+yl = ylabel('Train RMSE');
+setFontSizeNoTouchTicks(gca, gcf, xl, yl);
+
+ax(2) = subplot(212);
+boxTe = boxplot(teRMSE,'plotstyle','compact','colors','r', 'labels', getShortLabels(alpha));
+xl = xlabel('Alpha');
+yl = ylabel('Test RMSE');
+setFontSizeNoTouchTicks(gca, gcf, xl, yl);
+
+linkaxes(ax);
+print -dpng 'plots/alphaRMSEBox.png';
