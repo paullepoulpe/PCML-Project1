@@ -194,7 +194,7 @@ close;
 %% Plot ridge vs leastSquares vs leastSquaresGD
 
 lambda = 100;
-alpha = 0.25;
+alpha = 0.3;
 groups = 3;
 numIterations = 100;
 
@@ -206,11 +206,11 @@ ridgePredict = @(Xtr, ytr, Xte){
     predictRegression(Xtr, ytr, Xte, ridgePredictor);
 };
 leastSquaresPredict = @(Xtr, ytr, Xte){
-    predictRegression(Xtr, ytr, Xte, ridgePredictor);
+    predictRegression(Xtr, ytr, Xte, leastSquaresPredictor);
 };
 
 leastSquaresGDPredict = @(Xtr, ytr, Xte){
-    predictRegression(Xtr, ytr, Xte, ridgePredictor);
+    predictRegression(Xtr, ytr, Xte, leastSquaresGDPredictor);
 };
 
 
@@ -226,18 +226,21 @@ for i = 1:numIterations
     
     [trError, teError] = crossValidation(X_train, y_train, groups, leastSquaresGDPredict, false);
     leastSquaresGDTrRMSE(i) = mean(trError.RMSE);
-    eastSquaresGDTeRMSE(i) = mean(teError.RMSE);
+    leastSquaresGDTeRMSE(i) = mean(teError.RMSE);
 end
 
 %%
 figure()
 ax(1) = subplot(121);
-boxplot([leastSquaresTrRMSE' leastSquaresGDTrRMSE' ridgeTrRMSE'],'labels',{'least-squares','least-squares GD','ridge regression'});
+boxplot([leastSquaresTrRMSE leastSquaresGDTrRMSE' ridgeTrRMSE'],...
+    'labels',{'LS','LS-GD','Ridge'});
 ylabel('Train RMSE')
+ylim([400 700])
 ax(2) = subplot(122);
-boxplot([leastSquaresTeRMSE' eastSquaresGDTeRMSE' ridgeTeRMSE'],'labels',{'least-squares','least-squares GD','ridge regression'});
+boxplot([leastSquaresTeRMSE leastSquaresGDTeRMSE' ridgeTeRMSE'],...
+    'labels',{'LS','LS-GD','Ridge'});
 ylabel('Test RMSE')
-
+ylim([400 700])
 
 
 
