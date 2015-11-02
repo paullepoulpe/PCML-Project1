@@ -44,12 +44,27 @@ In this report, ...
 
 \section{Regression}
 \subsection{Data Description}
-Our regression-data contains $N=2800$ train-examples and $N=1200$ test-data. The train-data are composed of input and output variables $X$ and $y$. Each input $x_n$ has a dimensionality $D=70$ with 60 real-valued variables, 1 binary variable, 5 and 4 categorical variables with respectively 3 and 4 categories. The output of our test-data is not observed. Our goal is then to predict $y$ for all test-examples and to give an approximation of the test-error.
+Our regression-data contains $N=2800$ train-examples and $N=1200$ test-data. The
+train-examples are composed of input and output variables $X$ and $y$. Each
+input $x_n$ has a dimensionality $D=70$ with 60 real-valued variables, 1 binary
+variable, 5 and 4 categorical variables with respectively 3 and 4 categories.
+The output of our test-data is not observed. Our goal is then to predict $y$ for
+all test-examples and to give an approximation of the test-error.
 
 \subsection{Data Visualization and Cleaning}
-To visualise our data, we plotted histograms to see the distribution of $y$ and of $X$ dimensions. The input data is not centred, so that we need to normalise it. 
+To visualise our data, we plotted histograms to see the distribution of $y$ and
+of $X$ dimensions. The input data is not centred, so that we need to normalise
+it. 
 
-Figure ~\ref{fig:reg_yHistogram} shows the histogram of the output variable. We see that the data are split in three bursts of different sizes : a large amount of the data have small output values and only a small part have the highest values. All real-valued variables seem to have sort of Gaussian distributions, excepted $6^{th}$ and $55^{th}$ dimensions that are split in two bursts. By plotting $y$ in function of each of these variables, as shown in Figures ~\ref{fig:reg_dim6} and ~\ref{fig:reg_dim55}, we can see that $y$ is highly correlated with dimensions $6$ and $55$ of $X$. The output-data can thus be separated in three clusters by looking at $x_n(6)$ ans $x_n(55)$ for each data.
+Figure ~\ref{fig:reg_yHistogram} shows the histogram of the output variable. We
+see that the data are split in three bursts of different sizes : a large amount
+of the data have small output values and only a small part have the highest
+values. All real-valued variables seem to have sort of Gaussian distributions,
+excepted $6^{th}$ and $55^{th}$ dimensions that are split in two bursts. By
+plotting $y$ in function of each of these variables, as shown in Figures
+~\ref{fig:reg_dim6} and ~\ref{fig:reg_dim55}, we can see that $y$ is highly
+correlated with dimensions $6$ and $55$ of $X$. The output-data can thus be
+separated in three clusters by looking at $x_n(6)$ ans $x_n(55)$ for each data.
 
 \begin{figure}[!h] % !t
 	\center
