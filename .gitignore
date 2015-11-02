@@ -8,5 +8,8 @@
 /src/regression/plots
 /src/classification/plots
 
+/src/regression/results
+/src/classification/results
+
 /data/*
 !/data/SaoPaulo*

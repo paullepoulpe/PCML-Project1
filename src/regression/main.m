@@ -7,16 +7,25 @@ addpath('../methods');
 
 load('../../data/SaoPaulo_regression.mat')
 
-% predict = @(Xtr, Ytr, Xte) predictRegression(Xtr, Ytr, Xte, 10^5);
-% [ trRMSE, teRMSE ] = crossValidation(y_train, X_train, 3, predict);
 
-[ trRMSE, teRMSE, lambda ] = findBestRidgeLambda(X_train, y_train);
-%%
-figure()
-ax(1) = subplot(211);
-boxTr = boxplot(trRMSE,'plotstyle','compact','colors','b','labels',lambda);
-ax(2) = subplot(212);
-hold on
-boxTe = boxplot(teRMSE,'plotstyle','compact','colors','r');
-linkaxes(ax);
-%ylim([0.05 0.12])
+predictor = @(y, tX) ridgeRegression(y, tX, 100);
+predict = @(Xtr, ytr, Xte) predictRegression(Xtr, ytr, Xte, predictor);
+
+yTe = predict(X_train, y_train, X_test);
+csvwrite('results/predictions_regression.csv', yTe);
+
+
+nbIteration = 100;
+
+RMSE = zeros(1, nbIteration);
+for i = 1:nbIteration
+    home;
+    fprintf('Iteration %d out of %d\n', i, nbIteration);
+    [~, teError] = crossValidation(X_train, y_train, 3, predict, false);
+    RMSE(i) = mean(teError.RMSE);
+end
+
+file = fopen('results/test_errors_regression.csv', 'w');
+fprintf(file, 'rmse,%d', round(mean(RMSE)));
+fclose(file);
+
