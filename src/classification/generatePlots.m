@@ -19,6 +19,16 @@ setFontSize = @(gca, gcf, xl, yl) {
     set(xl, 'FontSize', LABEL_FONT_SIZE); set(yl, 'FontSize', LABEL_FONT_SIZE)
     };
 
+setFontSizeNoTouchTicks = @(gca, gcf, xl, yl) {
+    %set(gca, 'FontSize', FONT_SIZE); 
+    %set(findall(gcf,'type','text'), 'FontSize', FONT_SIZE); 
+    set(xl, 'FontSize', LABEL_FONT_SIZE); set(yl, 'FontSize', LABEL_FONT_SIZE);
+    };
+
+getShortLabels = @(nums) {
+    arrayfun(@(x) sprintf('%.1E', x), nums, 'UniformOutput', false);
+    };
+
 
 %% Histogram of dimension 35
 figure();
@@ -64,5 +74,24 @@ yl = ylabel('Frequency');
 setFontSize(gca, gcf, xl, yl);
 
 print -dpng 'plots/dim23.png';
+close;
+
+%% BoxPlots of lambda vs Loss
+
+[ trRMSE, teRMSE, trLoss, teLoss, lambda ] = findBestPenLambda(X_train, y_train);
+
+%%
+figure()
+boxplot(trLoss,'plotstyle','compact','colors','b','labels', getShortLabels(lambda));
+hold on
+boxplot(teLoss,'plotstyle','compact','colors','r', 'labels', getShortLabels(lambda));
+xl = xlabel('Lambda');
+yl = ylabel('Loss');
+
+setFontSizeNoTouchTicks(gca, gcf, xl, yl);
+
+ylim([0 0.15])
+
+print -dpng 'plots/lambdaLossBox.png';
 close;
 
