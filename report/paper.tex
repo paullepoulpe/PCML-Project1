@@ -39,7 +39,7 @@ EPFL \\
 \maketitle
 
 \begin{abstract}
-In this report, we study several linear method to compute regression and classification on two different datasets. For the regression part, we used k-means clustering to separate the data in three clusters. As the input matrix is ill-conditioned, we applied a PCA algorithm to reduce its dimensionality. We observe that TODO. We obtained similar train and test RMSE around $520$. For the classification part, we separate the data given their distribution along the dimensions of the input. WHICH ALGORITHM IS THE BEST; IDEA OF ERROR.
+In this report, we study several linear method to compute regression and classification on two different datasets. For the regression part, we used k-means clustering to separate the data in three clusters. As the input matrix is ill-conditioned, we applied a PCA algorithm to reduce its dimensionality. Ridge regression is preferred over least-squares and least-squares with gradient descent, as it has the lower bias and variance. For the classification part, we separate the data given their distribution along the dimensions of the input. WHICH ALGORITHM IS THE BEST.
 \end{abstract}
 
 \section{Regression}
@@ -150,7 +150,7 @@ Figure ~\ref{fig:reg_compareMethods} compares three regression methods with $\al
 	\label{fig:reg_compareMethods}
 \end{figure}
 
-The median train/test RMSE are respectively equal to $526/539$, $551/562$ and $526/524$ for least-squares, least-squares GD and ridge regression. We observe that least-squares GD has a high bias and a low variance compared to least-squares that has a lower bias and a higher variance. 
+The median train/test RMSE are respectively equal to $526/539$, $551/562$ and $526/524$ for least-squares, least-squares GD and ridge regression. We observe that least-squares GD has a high bias and a low variance compared to least-squares that has a lower bias and a higher variance. Even if least-squares and ridge regression have similar train and test RMSE, we prefer to use ridge regression as its variance is lower and as its outliers are not very far from the median compared to those of least-squares.
 
 \section{Classification}
 \subsection{Data Description}
@@ -181,16 +181,25 @@ After the clustering of the test-data, each group is also treated separately. Th
 \subsection{Logistic Regression}
 We applied logistic regression and penalised logistic regression on our dataset. Both regressions were implemented with Newton's method. To improve the convergence, the step size was adapted at each time step to be proportional to the log likelihood such that $\alpha = log(\ell) * 10^{-4}$. The convergence criterion was reached when the difference between $\beta$ between two consecutive iterations was lower than $0.001$.
 
-Figure TODO shows the train and test TODO ERROR for $\lambda$ varied from
+Figure ~\ref{fig:class_penLogistic} shows the train and test loss function for $\lambda$ varied from $10^{-3}$ to $1$.
+
+\begin{figure}[!h] % !t
+	\center
+	\includegraphics[width=3in]{figures/comparisonReg.png}
+	\caption{Boxplots of train and test loss function for penalised logistic regression in function of $\lambda$.}
+	\label{fig:class_penLogistic}
+\end{figure}
 
 \section{Summary}
-In this report, we analyse a regression and a classification dataset. We used k-means clustering and PCA to preprocess the regression data. We found that least-squares, least-squares with gradient descent and ridge regression TO DO.
+In this report, we analyse a regression and a classification dataset. We used k-means clustering and PCA to preprocess the regression data. We found that ridge regression give a reasonable fit with a test RMSE equal to $524 \pm 20$. Least-squares and least-squares with gradient descent predictions have respectively a higher variance and a higher bias compared to ridge regression.
 
 We separated the classification data using a binary dimension that classify the data in two different distributions along the variable of the input data. We found that TODO.
 
 
 \subsubsection*{Acknowledgments}
-...
+We would like to thank Zo\'e Baraschi for her support. She was there to help us in moments of darkness with food and hugs. We also would like to thank moodle to have given us this half an hour that was unhoped for. It gave us the courage and time to finish writing up this report.
+
+We also collaborated efficiently to generate all the code and the report.
 
 \subsubsection*{References}
 
