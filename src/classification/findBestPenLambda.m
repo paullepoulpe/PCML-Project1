@@ -1,6 +1,6 @@
 function [ trRMSE, teRMSE, trLoss, teLoss, lambdas ] = findBestPenLambda( X, y )
-%FINDBESTRIDGELAMBDA Summary of this function goes here
-%   Detailed explanation goes here
+%FINDBESTRIDGELAMBDA Find the optimal lambda to minimise the error of the
+%penalised logistic regression
 
 lambdas = logspace(-3, 0, 10);
 

@@ -98,8 +98,8 @@ close;
 %% BoxPlots of PenLogistic Regression vs Logistic
 
 lambda = 0.01;
-groups = 3;
-numIterations = 2;
+groups = 2;
+numIterations = 50;
 
 penLogisticPredictor = @(y, tX) penLogisticRegression(y, tX, 0.001, lambda);
 logisticPredictor = @(y, tX) logisticRegression(y, tX, 0.001);
@@ -124,30 +124,22 @@ for i = 1:numIterations
     [trError, teError] = crossValidation(X_train, y_train, groups, penLogPredict, true);
     penLogTrLoss(i) = mean(trError.Loss);
     penLogTeLoss(i) = mean(teError.Loss);
-    disp(size(trError))
-    trError
-    disp(size(penLogTrLoss))
-    penLogTrLoss
     
     [trError, teError] = crossValidation(X_train, y_train, groups, logPredict, true);
     logTrLoss(i) = mean(trError.Loss);
     logTeLoss(i) = mean(teError.Loss);
-    disp(size(trError))
-    trError
-    disp(size(logTrLoss))
-    logTrLoss
     fprintf('End of iteration %d\n', i);
 end
 
 %%
 figure()
 ax(1) = subplot(121);
-boxplot([penLogTrLoss' logTrLoss'],...
-    'labels',{'PenLog','Log'});
-ylabel('Train RMSE')
-%ylim([400 700])
+boxplot([logTrLoss' penLogTrLoss'],...
+    'labels',{'Log','PenLog'});
+ylabel('Train Loss Function')
+ylim([0.03 0.16])
 ax(2) = subplot(122);
-boxplot([penLogTeLoss' logTeLoss'],...
-    'labels',{'PenLog','Log'});
-ylabel('Test RMSE')
-%ylim([400 700])
+boxplot([logTeLoss' penLogTeLoss'],...
+    'labels',{'Log','PenLog'});
+ylabel('Test Loss Function')
+ylim([0.03 0.16])

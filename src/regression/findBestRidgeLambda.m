@@ -1,6 +1,5 @@
 function [ trRMSE, teRMSE, lambdas ] = findBestRidgeLambda( X, y )
-%FINDBESTRIDGELAMBDA Summary of this function goes here
-%   Detailed explanation goes here
+%FINDBESTRIDGELAMBDA
 
 lambdas = logspace(-3, 7, 60);
 

@@ -1,6 +1,5 @@
 function [ trRMSE, teRMSE, lambdas ] = findBestGDAlpha( X, y )
-%FINDBESTRIDGELAMBDA Summary of this function goes here
-%   Detailed explanation goes here
+%FINDBESTGDALPHA 
 
 lambdas = logspace(-3, -0.5, 20);
 

@@ -1,7 +1,7 @@
 function beta = penLogisticRegression(y,tX,alphaInitial,lambda)
 
 % Maximum number of iterations
-maxIters = 5000; % TO DEFINE
+maxIters = 5000; 
 
 % Number of data
 N = size(tX,1);
@@ -20,15 +20,14 @@ for k = 1:maxIters
     % Compute the Hessian
     H = computePenHessian(tX, beta, lambda);
     
-    % Update beta using gradient descent
-    % beta = beta - alpha.*g;
     % Update beta using Newton's method
     beta = beta - alpha.*(H^-1)*g;
     
     % Compute cost of logistic regression
     L = computeCostPenLogisticReg(y, tX, beta, lambda);
-    alpha = abs(L*10^(-4));
     
+    % Compute step size
+    alpha = abs(L*10^(-4));
     
     % Store beta and L
     beta_all(:,k) = beta;
@@ -36,7 +35,6 @@ for k = 1:maxIters
     
     % Look at the convergence
     if k>1
-%         fprintf('%d : %f  %f %f\n', k,L, alpha, max(abs(beta-beta_all(:,k-1))));
         if abs(beta-beta_all(:,k-1))<0.001
             % If the difference between last and present beta is small...
             % break

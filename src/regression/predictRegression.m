@@ -18,12 +18,6 @@ numClusters = 3;
 
 clustersPred = predictClusters(XTe);
 
-%figure()
-%plot(XTe(clustersPred == 1, clusteredDim(1)),XTe(clustersPred == 1, clusteredDim(2)),'r*');
-%hold on
-%plot(XTe(clustersPred == 2, clusteredDim(1)),XTe(clustersPred == 2, clusteredDim(2)),'b*');
-%plot(XTe(clustersPred == 3, clusteredDim(1)),XTe(clustersPred == 3, clusteredDim(2)),'g*');
-
 %% Train regression model for each cluster
 V = cell(numClusters, 1);
 VReduced = cell(numClusters, 1);
@@ -50,16 +44,9 @@ for cl = 1:numClusters
     % Compute tX and final y
     tXTr{cl,1} = [ones(length(XTrKept), 1)  XTrKept];
     yTrF{cl,1} = yTrFiltered;
-    
-    % Compute regression
-%     beta{cl,1} = leastSquaresGD(yTrF{cl,1}, tXTr{cl,1}, param);
-%     beta{cl,1} = leastSquares(yTrF{cl,1}, tXTr{cl,1});
- %   beta{cl,1} = ridgeRegression(yTrF{cl,1}, tXTr{cl,1}, param);
  
     beta{cl, 1} = localPredictor(yTrF{cl,1}, tXTr{cl,1});
  
-%     figure()
-%     plot(XTrKept(:,1),yTrF{cl,1},'*');
 end
 
 %% Test 

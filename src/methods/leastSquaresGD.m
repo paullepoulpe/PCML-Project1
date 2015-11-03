@@ -1,7 +1,7 @@
 function beta = leastSquaresGD( y, tX, alpha )
 
 % Maximum number of iterations
-maxIters = 10000; % TO DEFINE
+maxIters = 10000;
 epsilon = alpha * 1.5;
 
 % Number of data
@@ -23,8 +23,8 @@ for k = 1:maxIters
     beta = beta - alpha.*g;
     
     % Store beta and L 
-    beta_all(:,k) = beta; % FOR DEBUG
-    L_all(k) = L; % FOR DEBUG
+    beta_all(:,k) = beta; 
+    L_all(k) = L; 
     
     % Look at the convergence
     if k>1
