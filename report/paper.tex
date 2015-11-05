@@ -39,7 +39,7 @@ EPFL \\
 \maketitle
 
 \begin{abstract}
-In this report, we study several linear method to compute regression and classification on two different datasets. For the regression part, we used k-means clustering to separate the data in three clusters. As the input matrix is ill-conditioned, we applied a PCA algorithm to reduce its dimensionality. Ridge regression is preferred over least-squares and least-squares with gradient descent, as it has the lower bias and variance. For the classification part, we separate the data given their distribution along the dimensions of the input. WHICH ALGORITHM IS THE BEST.
+In this report, we study several linear methods to compute regression and classification on two different datasets. For the regression part, we used k-means clustering to separate the data in three clusters. As the input matrix is ill-conditioned, we applied a PCA algorithm to reduce its dimensionality. Ridge regression is preferred over least-squares and least-squares with gradient descent, as it has the lower bias and variance. For the classification part, we separated the data given their distribution along the dimensions of the input. Penalised logistic regression is preferred over logistic regression as it converges more reliably to a model and has lower bias and variance.
 \end{abstract}
 
 \section{Regression}
@@ -57,7 +57,7 @@ of $X$ dimensions. The input data is not centred, so that we need to normalise
 it. 
 
 Figure ~\ref{fig:reg_yHistogram} shows the histogram of the output variable. We
-see that the data are split in three bursts of different sizes : a large amount
+see that the data is split in three bursts of different sizes : a large amount
 of the data have small output values and only a small part have the highest
 values. All real-valued variables seem to have sort of Gaussian distributions,
 excepted $6^{th}$ and $55^{th}$ dimensions that are split in two bursts. By
@@ -66,21 +66,16 @@ plotting $y$ in function of each of these variables, as shown in Figures
 correlated with dimensions $6$ and $55$ of $X$. The output-data can thus be
 separated in three clusters by looking at $x_n(6)$ ans $x_n(55)$ for each data.
 
-\begin{figure}[!h] % !t
-	\center
-	\includegraphics[width=2.2in]{figures/y_histogram.png}
-	\caption{Histogram of $y$. We can see three bursts of data.}
-	\label{fig:reg_yHistogram}
-\end{figure}
-
 We also computed the eigenvalues of the matrix $X^T X$. As ten eigenvalues are smaller than $10^{-10}$, we will need to transform $X$ to remove dimensions corresponding to those small eigenvalues or to use methods such as ridge regression to lift them. 
 
 \begin{figure}[!h] % !t
 \center
-\subfigure[$y$ in function of $55^{th}$ dimension of $X$.]{\includegraphics[width=2in]{figures/dim6.png} \label{fig:reg_dim6}}
+\subfigure[Histogram of $y$. We can see three bursts of data.]{\includegraphics[width=1.8in]{figures/y_histogram.png} \label{fig:reg_yHistogram}}
 \hfill
-\subfigure[$y$ in function of $6^{th}$ dimension of $X$.]{\includegraphics[width=2in]{figures/dim55.png} \label{fig:reg_dim55}}
-\caption{Graphs of $y$ in function of the input dimensions most correlated with the output.}
+\subfigure[$y$ in function of the most correlated dimension ($55^{th}$) of $X$ with $y$.]{\includegraphics[width=1.8in]{figures/dim55.png} \label{fig:reg_dim6}}
+\hfill
+\subfigure[$y$ in function of the second most correlated dimension ($6^{th}$) of $X$ with $y$.]{\includegraphics[width=1.8in]{figures/dim6.png} \label{fig:reg_dim55}}
+\caption{Regression data visualisation.}
 \end{figure}
 
 \subsection{Clustering}
@@ -94,11 +89,9 @@ As the data are not equally shared between the three clusters, we first compute 
 	\label{fig:reg_clustersTrain}
 \end{figure}
 
-In order to ensure a reliable clustering, we do not initialise the centres randomly. During the initialisation, we sort the data-points by their norm and separate the sorted list in $k$ chunks, where $k$ is the given number of clusters. The mean along each dimension is then calculated for each chunk giving the initial centres for the clusters.
+In order to ensure a reliable clustering, we do not initialise the centres randomly. During the initialisation, we sort the data-points by their norm and separate the sorted list in $k$ chunks, where $k$ is the given number of clusters. The mean along each dimension is then calculated for each chunk and gives the position of each initial cluster centre.
 
-During the test part, we follow the same principle. The most correlated dimension of $X$ found during the training part is used to find the closest centre and the second most correlated dimension is then used to divide the data classified in the sparse cluster in two sub-clusters.
-
-Figure ~\ref{fig:reg_clustersTest} shows an example of k-means clustering for test data.
+During the test part, we follow the same principle as for the training. First, the most correlated dimension of $X$ found during the training part is used to assign each point to one of the two big clusters, as shown in Figure ~\ref{fig:reg_clustersTest1}. The second most correlated dimension is then used to divide the data classified in the sparse cluster in two sub-clusters, as shown in Figure ~\ref{fig:reg_clustersTest2}.
 
 \begin{figure}[!h] % !t
 	\center
@@ -112,18 +105,18 @@ Figure ~\ref{fig:reg_clustersTest} shows an example of k-means clustering for te
 \subsection{Feature transformations}
 After the separation in cluster, each group of train-data is treated separately. For each cluster, the dimensions of $X$ and $y$ are normalised to have zero-mean and unitary standard deviation. We also implemented a method to fix the outliers and a PCA to improve our predictions. 
 
-We defined as outliers the data-points for which some elements of one or more real-valued dimensions are further than 3 standard deviations from the mean. As our data were normalised, all non-categorical element higher than 3 were considered as outlier elements. To fix the outliers, value $3$ (or $-3$) was assigned to those elements. Fixing the outliers with this methods allows us to avoid errors in prediction models due to false-classified data.
+We defined as outliers the data-points for which some elements of one or more real-valued dimensions are further than 3 standard deviations from the mean. As our data were normalised, all non-categorical elements higher than 3 were considered as outlier elements. To fix the outliers, value $3$ (or $-3$) was assigned to those elements. Fixing the outliers with this method allows us to limit errors due to false-classified data in our model.
 
-The PCA is applied only on the real-valued dimensions. It projects our input data in a new coordinate system based on the covariance between dimensions. It allows us to reduce the dimensionality of our data in this new space by removing the dimensions with eigenvalues lower than a defined value. We choose this value equal to $1$ as eleven dimensions have eigenvalues in the order of $10^{-10}$ and all others are higher than $10$. The data are then projected back in the initial coordinate system. In our case, the PCA reduce our input data by eleven dimensions.
+The PCA is applied only on the real-valued dimensions. It projects our input data in a new coordinate system based on the covariance between dimensions. It allows us to reduce the dimensionality of our data in this new space by removing the dimensions with eigenvalues lower than a defined threshold. We choose this threshold equal to $1$ as eleven dimensions have eigenvalues in the order of $10^{-10}$ and all others are higher than $10$. The data are then projected back in the initial coordinate system. In our case, the PCA reduces our input data by eleven dimensions.
 
-After the clustering of test-data, each group is also treated separately. The data are first normalised given the means and standard deviations computed during the training. The outliers are then fixed and PCA is applied by projecting the data with the eigenvectors computed during the training part.
+After the clustering of test-data, each group is also treated separately. The data is first normalised given means and standard deviations computed during the training. The outliers are then fixed and PCA is applied by projecting the data with the eigenvectors computed during the training part.
 
 \subsection{Least-Squares and Ridge Regression}
-We applied least-squares, least-squares with gradient descent and ridge regression to our dataset. Using PCA allows us to solve the problem of ill-conditioned matrix, so that we can use the three methods mentioned above. The ridge regression is the only method that can be used without reducing the dimensionality of the input data.
+We applied least-squares, least-squares with gradient descent and ridge regression to our dataset. Using PCA allows us to solve the problem of ill-conditioned matrix, so that we can use the three methods mentioned above. Ridge regression is the only method that can be used without reducing the dimensionality of our input data.
 
-We computed the RMSE for each model with and without the categorical dimensions of X. As removing those dimensions does not change significantly the error, we decided to compute the regression only with the 60 real-valued dimensions.
+We computed RMSE for each model with and without the categorical dimensions of X. As removing those dimensions does not change significantly the error, we decided to compute the regression only with the 60 real-valued dimensions of $X$.
 
-Figure ~\ref{fig:reg_alphaRMSE} shows the train and test RMSE for a step size $\alpha$ varied from $10^{-3}$ to $10^{-0.5}$ with $20$ points in between. The convergence condition was reached when the variation of $\beta$ between two iterations was lower than $1.5 \alpha$. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. Train and test RMSE is optimal for $\alpha \approx 0.2$. With higher $\alpha$ values, gradient descent is not able to converge and the error goes to $\infty$.
+Figure ~\ref{fig:reg_alphaRMSE} shows train and test RMSE for a step size $\alpha$ varied from $10^{-3}$ to $10^{-0.5}$ with $20$ points in between. The convergence condition was reached when the variation of $\beta$ between two iterations was lower than $1.5 \alpha$. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. Train and test RMSE are optimal for $\alpha \approx 0.2$. With higher $\alpha$ values, gradient descent is not able to converge and the error goes to $\infty$.
 
 \begin{figure}[!h] % !t
 	\center
@@ -132,11 +125,11 @@ Figure ~\ref{fig:reg_alphaRMSE} shows the train and test RMSE for a step size $\
 	\label{fig:reg_alphaRMSE}
 \end{figure}
 
-Figure ~\ref{fig:reg_lambdaRMSE} shows the train and test RMSE for $\lambda$ varied from $10^{-3}$ to $10^{7}$ with $60$ points in between. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. We can see that $\lambda$ should be chosen between $0$ and $100$ to have the best prediction and that $\lambda$ higher than $1000$ increases the RMSE and the model under-fits. For high $\lambda$ values, the model and estimation bias are increased as their variance is reduced.
+Figure ~\ref{fig:reg_lambdaRMSE} shows train and test RMSE for $\lambda$ varied from $10^{-3}$ to $10^{7}$ with $60$ points in between. Cross-validation was made using $66 \% $ of the data as train data and the rest as test data. We can see that $\lambda$ should be chosen between $0$ and $100$ to have the best prediction and that $\lambda$ higher than $1000$ increases RMSE and the model under-fits. For high $\lambda$ values, the model and estimation bias are increased as their variance is reduced.
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=2.6in]{figures/lambdaRMSE.png}
+	\includegraphics[width=2.8in]{figures/lambdaRMSE.png}
 	\caption{Ridge regression for a $66 \%$ - $33 \%$ split with 3 iterations for each $\lambda$.}
 	\label{fig:reg_lambdaRMSE}
 \end{figure}
@@ -150,50 +143,59 @@ Figure ~\ref{fig:reg_compareMethods} compares three regression methods with $\al
 	\label{fig:reg_compareMethods}
 \end{figure}
 
-The median train/test RMSE are respectively equal to $526/539$, $551/562$ and $526/524$ for least-squares, least-squares GD and ridge regression. We observe that least-squares GD has a high bias and a low variance compared to least-squares that has a lower bias and a higher variance. Even if least-squares and ridge regression have similar train and test RMSE, we prefer to use ridge regression as its variance is lower and as its outliers are not very far from the median compared to those of least-squares.
+The medians of train/test RMSE are respectively equal to $526/539$, $551/562$ and $526/524$ for least-squares, least-squares GD and ridge regression. We observe that least-squares GD has a high bias and a low variance compared to least-squares. Even if least-squares and ridge regression have similar train and test RMSE, we prefer to use ridge regression as its variance is lower and as outliers are not very far from the median compared to outliers of least-squares.
 
 \section{Classification}
 \subsection{Data Description}
-Our classification-data contains $N=1500$ train-examples and $N=1500$ test-data. The train-data are composed of input and output variables $X$ and $y$. Each input $x_n$ has a dimensionality $D=37$ with 32 real-valued variables, 2 binary variables, 3 categorical variables with 5 categories. The output is a binary variable equal to $1$ or $-1$. The output of our test-data is not observed. Our goal is then to predict $y$ for all test-examples and to give an approximation of the test-error.
+Our classification-data contains $N=1500$ train-examples and $N=1500$ test-data. The train-data is composed of input and output variables $X$ and $y$. Each input $x_n$ has a dimensionality $D=37$ with 32 real-valued variables, 2 binary variables, 3 categorical variables with 5 categories. The output is a binary variable equal to $1$ or $-1$. The output of our test-data is not observed. Our goal is then to predict $y$ for all test-examples and to give an approximation of the test-error.
 
 \subsection{Data Visualization and Cleaning}
 To visualise our data, we plotted histogram of $X$ dimensions. The input data is again not centred, so that we need to normalise it.
 
-Figures ~\ref{fig:class_dim23} and ~\ref{fig:class_dim35} show respectively the histogram of the $23^{th}$ and the $35^{th}$ variable of $X$. We see that the distribution is composed of a high peak and a Gaussian distribution. We observed that most of the real-valued dimensions have similar distributions and that data-points belonging to the peak or to the Gaussian in one dimensions are contained in the same part of the distribution in other dimensions. Moreover, the binary value of the $20^{th}$ dimension is different for data-points in the peak or in the Gaussian, so that we can use this dimension to separate the input data in two clusters.
+Figures ~\ref{fig:class_dim23} and ~\ref{fig:class_dim35} show respectively the histogram of the $23^{th}$ and the $35^{th}$ variable of $X$. We see that the distribution is composed of a high peak and a sort of Gaussian distribution. We observed that most of the real-valued dimensions have similar distributions and that data-points belonging to the peak or to the Gaussian in one dimension are contained in the same part of the distribution in other dimensions. Moreover, the binary value of the $20^{th}$ dimension is different for data-points in the peak or in the Gaussian, so that we can use this dimension to separate the input data in two clusters.
 
-We also computed the eigenvalues of the matrix $X^{T}X$. As the smaller eigenvalue is equal to $58.4$, the matrix is full-rank and we do not need to use methods to lift the eigenvalues.
+We also computed the eigenvalues of the matrix $X^{T}X$. As the smaller eigenvalue is equal to $58.4$, the matrix is full-ranked and we do not need to use methods to lift the eigenvalues.
 
 \begin{figure}[!h] % !t
 	\center
-	\subfigure[Histogram of the $23^{th}$ dimension of $X$.]{\includegraphics[width=2.1in]{figures/dim23.png} \label{fig:class_dim23}}
+	\subfigure[Histogram of the $23^{th}$ dimension of $X$.]{\includegraphics[width=2.2in]{figures/dim23.png} \label{fig:class_dim23}}
 	\hfill
-	\subfigure[Histogram of the $35^{th}$ dimension of $X$.]{\includegraphics[width=2.1in]{figures/dim35.png} \label{fig:class_dim35}}
+	\subfigure[Histogram of the $35^{th}$ dimension of $X$.]{\includegraphics[width=2.2in]{figures/dim35.png} \label{fig:class_dim35}}
 	\caption{Example of histogram to show the distribution of $X$ dimensions. We can see that each distribution is composed of a peak in blue and of a Gaussian in red, separable given the $20^{th}$ variable.}
 \end{figure}
 
 \subsection{Feature Transformations}
-The train-data are first separated in two clusters given the value of the 20th dimension of $X$. Each group of data are then treated separately. The real-valued variables of $X$ are first normalised to have zero-mean and unitary standard deviation. We also implemented a method to remove the outliers.
+The train-data is first separated in two clusters given the value of the 20th dimension of $X$. Each group of data is then treated separately. The real-valued variables of $X$ are first normalised to have zero-mean and unitary standard deviation. We also implemented a method to remove the outliers.
 
 We defined as outliers the data-points for which at least one element of a real-valued dimension is further than 3 standard deviations from the mean. In this case, the data point is removed from the training set. 
 
-After the clustering of the test-data, each group is also treated separately. The real-valued input data are normalised given the means and standard deviations computed during the training.
+After the clustering of the test-data, each group is also treated separately. The real-valued input dimensions are normalised given the means and standard deviations computed during the training.
 
 \subsection{Logistic Regression}
-We applied logistic regression and penalised logistic regression on our dataset. Both regressions were implemented with Newton's method. To improve the convergence, the step size was adapted at each time step to be proportional to the log likelihood such that $\alpha = log(\ell) * 10^{-4}$. The convergence criterion was reached when the difference between $\beta$ between two consecutive iterations was lower than $0.001$.
+We applied logistic regression and penalised logistic regression on our dataset. Both regressions were implemented with Newton's method. To improve the convergence, the step size was adapted at each time step to be proportional to the log likelihood such that $\alpha = log(\ell) * 10^{-4}$. The convergence criterion was reached when the difference between $\beta$ computed during two consecutive iterations was lower than $0.001$.
 
-Figure ~\ref{fig:class_penLogistic} shows the train and test loss function for $\lambda$ varied from $10^{-3}$ to $1$. We observe that changing $\lambda$ does not really improve the train and test loss function. The difference of error between train and test shows that the model is over-fitting. This is surely due to the amount of train data compared to the amount of test data, which is not high enough. However, we chose this split to make a cross-validation with similar train/test quantities to those we are provided to make output prediction.
+Figure ~\ref{fig:class_penLogistic} shows train and test loss function for $\lambda$ varied from $10^{-3}$ to $1$. Cross-validation was made using $50\%$ of the data as train data and the rest as test data. We observe that changing $\lambda$ does not really improve the train and test loss function. The difference of error between train and test shows that the model is over-fitting. This is surely due to the amount of train data compared to the amount of test data, which is not high enough. However, we chose this split to make a cross-validation with similar train/test quantities to those we are provided to make output prediction.
 
 \begin{figure}[!h] % !t
 	\center
-	\includegraphics[width=2.6in]{figures/lambdaLossBox.png}
+	\includegraphics[width=2.8in]{figures/lambdaLossBox.png}
 	\caption{Penalised logistic regression for a $50 \% - 50\%$ split with 3 iterations for each $\lambda$.}
 	\label{fig:class_penLogistic}
 \end{figure}
 
-\section{Summary}
-In this report, we analyse a regression and a classification dataset. We used k-means clustering and PCA to preprocess the regression data. We found that ridge regression give a reasonable fit with a test RMSE equal to $524 \pm 20$. Least-squares and least-squares with gradient descent predictions have respectively a higher variance and a higher bias compared to ridge regression.
+Figure ~\ref{fig:class_compare} compares two classification methods with $\lambda = 0.01$ for the penalised logistic regression. The medians of train/test loss function are respectively $0.061/0.126$ and $0.057/0.115$ for logistic regression and for the penalised method. We observe that penalised logistic regression gives smaller error and has lower variance than simple logistic regression. Even if the improvement is not really significant, we prefer to use the penalised method, as the other one must sometimes be stopped before a complete convergence because the cost function suddenly explodes to infinity.
 
-We separated the classification data using a binary dimension that classify the data in two different distributions along the variable of the input data. We found that TODO.
+\begin{figure}[!h] % !t
+	\center
+	\includegraphics[width=3.0in]{figures/compareClassification.png}
+	\caption{Boxplots of train and test loss function for logistic regression (Log) and penalised logistic regression (PenLog) with 10 iterations for each method.}
+	\label{fig:class_compare}
+\end{figure}
+
+\section{Summary}
+In this report, we analysed a regression and a classification dataset. We used k-means clustering and PCA to preprocess the regression data. We found that ridge regression gives a reasonable fit with a test RMSE equal to $524 \pm 20$. Least-squares and least-squares with gradient descent predictions have respectively a higher variance and a higher bias compared to ridge regression.
+
+We separated the classification data using a binary dimension that classify the data in two different distributions along the variables of the input data. We found that penalised logistic regression gives a reasonable classification with a test loss function equal to $ 0.115 \pm 0.02$ and is more reliable than logistic regression.
 
 
 \subsubsection*{Acknowledgments}
